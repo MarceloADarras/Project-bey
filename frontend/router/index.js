@@ -4,6 +4,9 @@ import BeyCreation from '@/AddBey.vue'
 import VerBey from '@/VerBey.vue'
 import Registrar from '@/Registrar.vue'
 import Inicio from '@/Inicio.vue'
+import CrearChat from '@/CrearChatView.vue'
+import ChatsView from '@/ChatsView.vue'
+import ChatView from '@/ChatView.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -37,6 +40,21 @@ const router = createRouter({
             path: '/iniciar',
             name: 'Iniciar',
             component: Inicio
+        },
+        {
+            path: '/create/chat',
+            name: 'Crear-chat',
+            component: CrearChat
+        },
+        {
+            path: '/chats',
+            name: 'Chats',
+            component: ChatsView
+        },
+        {
+            path: '/chat/:id',
+            name: 'Chat',
+            component: ChatView
         }
     ]
 })

@@ -13,36 +13,13 @@ const emit = defineEmits(['cancelar', 'eliminar'])
 </script>
 
 <template>
-    <div class="modal-overlay">
-        <div class="modal">
+    <div class="fixed inset-0 w-screen h-screen bg-black/50 flex items-center justify-center z-[9999]">
+        <div class="flex flex-col items-center justify-center max-w-auto bg-white p-6 border-2 border-black rounded-lg gap-2">
             <h1>{{ texto }}</h1>
-            <BaseButton :color="color" :hover-color="hoverColor" @click="emit('eliminar')">{{ textoBoton }}</BaseButton>
-            <BaseButton @click="emit('cancelar')">{{ textoBoton2 }}</BaseButton>
+            <div class="flex items-center justify-center gap-4">
+                <BaseButton :color="color" :hover-color="hoverColor" @click="emit('eliminar')">{{ textoBoton }}</BaseButton>
+                <BaseButton @click="emit('cancelar')">{{ textoBoton2 }}</BaseButton>
+            </div>
         </div>
     </div>
 </template>
-
-<style>
-.modal-overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-
-    background: rgba(0,0,0,0.5);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    z-index: 9999;
-}
-
-.modal{
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    min-width: 300px;
-}
-</style>

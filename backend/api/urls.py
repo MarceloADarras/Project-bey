@@ -17,6 +17,11 @@ urlpatterns = [
     path('cargar/bey/<int:pk>', cargar_bey, name = "cargar_bey"),
     path('eliminar/bey/<int:pk>', eliminar_bey, name = "eliminar_bey"),
     path('crear/chat', crear_chat, name = "crear_chat"),
-    path('cargar/chat', cargar_chat, name = "cargar_chat"),
-    path('cargar/usuarios', cargar_usuarios, name = "cargar_usuarios")
+    path('cargar/chat/<int:pk>', cargar_chat, name = "cargar_chat"),
+    path('cargar/chats', cargar_chats, name = "cargar_chats"),
+    path('cargar/usuarios', cargar_usuarios, name = "cargar_usuarios"),
+    path('crear/mensaje', crear_mensaje, name = "crear_mensaje"),
+    path('eliminar/chat/<int:pk>', eliminar_chat, name = "eliminar_chat"),
+    path('buscador', buscador, name = "buscador"),
+    path('beybot/chat', beybots_chat, name = "beybot_chat")
 ]

@@ -11,27 +11,70 @@ import json
 
 @api_view(["POST"])
 def crear_beyblade(request):
-    data = json.loads(request.body)
-    nombre = data.get("nombre")
-    descripcion = data.get("descripcion")
-    fusion_wheel = data.get("fusion")
-    clear_wheel = data.get("clear")
-    spin_track = data.get("track")
-    tip = data.get("tip")
-    tipe = data.get("tipe")
+    # Handle both JSON and form data (for file uploads)
+    if request.content_type == 'application/json':
+        data = json.loads(request.body)
+        nombre = data.get("nombre")
+        descripcion = data.get("descripcion")
+        fusion_wheel = data.get("fusion")
+        clear_wheel = data.get("clear")
+        spin_track = data.get("track")
+        tip = data.get("tip")
+        tipe = data.get("tipe")
+        color = request.POST.get("color")
+        image = None
+    else:
+        # Handle form data (for file uploads)
+        nombre = request.POST.get("nombre")
+        descripcion = request.POST.get("descripcion")
+        fusion_wheel = request.POST.get("fusion")
+        clear_wheel = request.POST.get("clear")
+        spin_track = request.POST.get("track")
+        tip = request.POST.get("tip")
+        tipe = request.POST.get("tipe")
+        color = request.POST.get("color")
+        image = request.FILES.get("image") if 'image' in request.FILES else None
 
-    fusion = FusionWheel.objects.get(id = fusion_wheel)
-    clear = ClearWheel.objects.get(id = clear_wheel)
-    track = SpinTrack.objects.get(id = spin_track)
-    tipBey = Tip.objects.get(id = tip)
-    tipeBey = Tipe.objects.get(id = tipe)
+    # Validate required fields
+    if not all([nombre, descripcion, fusion_wheel, clear_wheel, spin_track, tip, tipe, color]):
+        return Response(
+            {"error": "Faltan campos requeridos"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-    Beyblade.objects.create(nombre=nombre, descripcion=descripcion,fusion_wheel=fusion, clear_wheel=clear, spin_track=track, tip=tipBey, tipe=tipeBey)
+    try:
+        fusion = FusionWheel.objects.get(id=fusion_wheel)
+        clear = ClearWheel.objects.get(id=clear_wheel)
+        track = SpinTrack.objects.get(id=spin_track)
+        tipBey = Tip.objects.get(id=tip)
+        tipeBey = Tipe.objects.get(id=tipe)
 
-    return Response(
-        {"success": "El Beyblade ha sido agregado correctamente"},
-        status=status.HTTP_201_CREATED
-    )
+        Beyblade.objects.create(
+            nombre=nombre, 
+            descripcion=descripcion,
+            fusion_wheel=fusion, 
+            clear_wheel=clear, 
+            spin_track=track, 
+            tip=tipBey, 
+            tipe=tipeBey, 
+            photo=image,
+            color=color
+        )
+
+        return Response(
+            {"success": "El Beyblade ha sido agregado correctamente"},
+            status=status.HTTP_201_CREATED
+        )
+    except (FusionWheel.DoesNotExist, ClearWheel.DoesNotExist, SpinTrack.DoesNotExist, Tip.DoesNotExist, Tipe.DoesNotExist):
+        return Response(
+            {"error": "Uno o más componentes no existen"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Exception as e:
+        return Response(
+            {"error": f"Error al crear beyblade: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 @api_view(["POST"])
 def crear_fusion(request):
@@ -189,6 +232,8 @@ def cargar_beyblades(request):
         lista = {
             "id": i.id,
             "nombre": i.nombre,
+            "photo": i.photo.url if i.photo else None,
+            "color": i.color
         }
         data.append(lista)
         
@@ -208,6 +253,7 @@ def cargar_bey(request, pk):
         "id": bey.id,
         "nombre": bey.nombre,
         "descripcion": bey.descripcion,
+        "photo": bey.photo.url if bey.photo else None,
         "fusion": bey.fusion_wheel.nombre,
         "descripcion1": bey.fusion_wheel.descripcion,
         "clear": bey.clear_wheel.nombre,
@@ -217,7 +263,8 @@ def cargar_bey(request, pk):
         "tip": bey.tip.nombre,
         "descripcion4": bey.tip.descripcion,
         "tipe": bey.tipe.nombre,
-        "descripcion5": bey.tipe.descripcion
+        "descripcion5": bey.tipe.descripcion,
+        "color": bey.color
     }
 
     return Response(data, status = status.HTTP_200_OK)
@@ -238,6 +285,49 @@ def eliminar_bey(request, pk):
         {"success": "El beyblade fue eliminado con exito"},
         status = status.HTTP_200_OK
     )
+
+@api_view([("GET")])
+def buscador(request):
+    busqueda = request.query_params.get("busqueda")
+
+    
+    resultados = Beyblade.objects.filter(nombre__icontains=busqueda)
+
+    if not resultados.exists():
+        pass
+
+    resultados = Beyblade.objects.filter(descripcion__icontains=busqueda)
+    
+    if not resultados.exists():
+        return Response(
+            [],
+            {"mensaje": "No se encontraron resultados"},
+            status=status.HTTP_200_OK
+        )
+    
+    data = []
+    for r in resultados:
+        list = {
+            "id": r.id,
+            "nombre": r.nombre,
+            "descripcion": r.descripcion,
+            "photo": r.photo.url if r.photo else None,
+            "fusion": r.fusion_wheel.nombre,
+            "descripcion1": r.fusion_wheel.descripcion,
+            "clear": r.clear_wheel.nombre,
+            "descripcion2": r.clear_wheel.descripcion,
+            "track": r.spin_track.nombre,
+            "descripcion3": r.spin_track.descripcion,
+            "tip": r.tip.nombre,
+            "descripcion4": r.tip.descripcion,
+            "tipe": r.tipe.nombre,
+            "descripcion5": r.tipe.descripcion,
+            "color": r.color
+        }
+        data.append(list)
+    
+    return Response(data, status = status.HTTP_200_OK)
+    
 
 
 

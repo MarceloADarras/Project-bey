@@ -10,7 +10,7 @@ class MensajeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model= Mensaje
-        fields = ["id", "usuario", "texto", "archivo", "enlace", "created_at"]
+        fields = ["id", "usuario", "texto", "archivo", "url", "created_at"]
     
     def get_archivo(self, obj):
         return obj.archivo.url if obj.archivo else None
@@ -20,19 +20,19 @@ class MensajeCreateSerializer(serializers.Serializer):
     id_chat = serializers.IntegerField()
     texto = serializers.CharField(required=False, allow_blank=True)
     archivo = serializers.FileField(required=False, allow_null=True)
-    enlace = serializers.URLField(required=False, allow_blank=True)
+    url = serializers.URLField(required=False, allow_blank=True)
 
     def validate(self, attrs):
         user = self.context.get("user")
-        if user in None:
+        if user is None:
             raise serializers.ValidationError("Usuario no proporcionado")
         
         texto = attrs.get("texto")
         archivo = attrs.get("archivo")
-        enlace = attrs.get("enlace")
+        url = attrs.get("url")
 
-        if not texto and not archivo and not enlace:
-            raise serializers.ValidateError("Debe enviar texto, enlace, o archivo")
+        if not texto and not archivo and not url:
+            raise serializers.ValidationError("Debe enviar texto, enlace, o archivo")
 
         try:
             chat = Chat.objects.get(id=attrs["id_chat"])

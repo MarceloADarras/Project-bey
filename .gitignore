@@ -3,6 +3,10 @@ backend/*/__pycache__
 backend/*/*/__pycache__
 backend/*/*/*/__pycache__
 
+backend/media
+
+backend/api/models/
+
 backend/*/migrations
 
 frontend/node_modules/

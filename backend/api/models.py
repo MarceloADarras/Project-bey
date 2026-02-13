@@ -46,7 +46,8 @@ class Beyblade(models.Model):
     spin_track = models.ForeignKey(SpinTrack, on_delete=models.CASCADE, related_name="beyblade")
     tip = models.ForeignKey(Tip, on_delete=models.CASCADE, related_name="beyblade")
     tipe = models.ForeignKey(Tipe, on_delete=models.CASCADE, related_name="beyblade")
-    photo = models.ImageField()
+    color = models.CharField(default="", max_length=100, null=False)
+    photo = models.ImageField(upload_to="media/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

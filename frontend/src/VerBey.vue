@@ -100,31 +100,39 @@
 </script>
 <template>
     <Header></Header>
-    <BeyComponent
-        :nombre="bey.nombre"
-        :descripcion="bey.descripcion"
-    ></BeyComponent>
+    
+    <div class="flex items-center justify-center p-6">
+        <div class="flex items-center justify-center gap-4">
+            <div class="flex flex-col items-center justify-center gap-4">
+                <img :src="bey.photo ? `http://127.0.0.1:8000${bey.photo}` : '../img/image.png'" class="h-auto w-[300px]">
+                <BeyComponent
+                    :nombre="bey.nombre"
+                    :descripcion="bey.descripcion"
+                ></BeyComponent>
+            </div>
 
-    <div class="contenedor-detalles">
+            <div class="contenedor-detalles">
 
-        <div class="detalle" type="button" @click="abrirModalF">
-            <h2>Fusion</h2>
-        </div>
+                <div class="detalle" type="button" @click="abrirModalF">
+                    <h2>Fusion Wheel</h2>
+                </div>
 
-        <div class="detalle" type="button" @click="abrirModalC">
-            <h2>Clear</h2>
-        </div>
+                <div class="detalle" type="button" @click="abrirModalC">
+                    <h2>Clear Wheel</h2>
+                </div>
 
-        <div class="detalle" type="button" @click="abrirModalT">
-            <h2>Track</h2>
-        </div>
+                <div class="detalle" type="button" @click="abrirModalT">
+                    <h2>Spin Track</h2>
+                </div>
 
-        <div class="detalle" type="button" @click="abrirModalTi">
-            <h2>Tip</h2>
-        </div>
+                <div class="detalle" type="button" @click="abrirModalTi">
+                    <h2>Performance Tip</h2>
+                </div>
 
-        <div class="detalle" type="button" @click="abrirModalTipe">
-            <h2>Tipe</h2>
+                <div class="detalle" type="button" @click="abrirModalTipe">
+                    <h2>Tipe</h2>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -163,8 +171,8 @@
         @cerrar="cerrarModalTipe()"
     ></ModalDetalleComponent>
 
-    <div class="flex justify-center">
-        <BaseButton  :color="'red'" :hover-color="'cyan'" @click="abrirModal()">Eliminar</BaseButton>
+    <div class="flex justify-center mt-4 p-4">
+        <BaseButton :color="'#A61C1C'" :hover-color="'#E63946'" @click="abrirModal()">Eliminar</BaseButton>
     </div>
 
     <ModalEliminarComponent
@@ -179,27 +187,92 @@
     ></ModalEliminarComponent>
 </template>
 <style>
-.contenedor-detalles{
+.main-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap; /* para pantallas pequeñas */
-    margin-top: 30px;
+    align-items: flex-start;
+    min-height: calc(100vh - 70px);
+    padding: 20px;
 }
+
+.content-wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.contenedor-detalles{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    flex: 0 0 auto;
+}
+
 .detalle{
     display: flex;
     justify-content: center;
-    align-content: flex-start;
-    max-width: 300px;
-    margin: 40px auto;
+    align-items: center;
+    width: 150px;
+    height: 150px;
     padding: 20px;
-    border: 1px solid black;
-    border-radius: 30%;
-    border-width: 2px;
+    border: 2px solid #FF6B35;
+    border-radius: 50%;
     transition: all 0.3s ease;
+    background: #ffff;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .detalle:hover{
     transform: scale(1.1);
+    background: rgba(230, 57, 70, 0.7);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border: 2px solid #000;
+    border-color: #000;
+}
+
+.detalle:hover h2 {
+    color: #000;
+}
+
+.detalle h2 {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #E63946;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.eliminar-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .contenedor-detalles {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .detalle {
+        flex: 0 0 auto;
+    }
+    
+    .eliminar-container {
+        margin-top: 30px;
+    }
 }
 </style>

@@ -35,15 +35,18 @@ const login = async() => {
 <template>
     <Header></Header>
     <form>
-        <div class="general">
-            <h1>Iniciar sesion</h1>
-            <div class="campos">
-                <h3>Nombre de usuario</h3>
-                <input type="text" v-model="username">
-                <h3>Contraseña</h3>
-                <input type="password" v-model="pass">
+        <div class="flex items-center justify-center">
+            <div class="relative flex flex-col items-center p-6 m-6 gap-4 border-2 border-black rounded-lg bg-white w-fit">
+                <h1 class="font-bold text-[24px]">Iniciar sesion</h1>
+                <div class="flex flex-col gap-2 w-full">
+                    <h3 class="text-sm">Nombre de usuario</h3>
+                    <input class="border-1 border-black px-2 py-1 rounded w-64 bg-gray-200" type="text" v-model="username">
+                    <h3 class="text-sm">Contraseña</h3>
+                    <input class="border-1 border-black px-2 py-1 rounded w-64 bg-gray-200" type="password" v-model="pass">
+                </div>
+                <BaseButton :color="'Cyan'" :hover-color="'Red'" @click="login()">Iniciar</BaseButton>
             </div>
         </div>
     </form>
-    <BaseButton :color="'Cyan'" :hover-color="'Red'" @click="login()">Iniciar</BaseButton>
+    
 </template>

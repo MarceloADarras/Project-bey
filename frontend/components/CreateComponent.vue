@@ -9,6 +9,8 @@
     const track = ref([])
     const tip = ref([])
     const tipe = ref([])
+    const image = ref()
+    const color = ref("")
 
     const nombres = ref("")
     const descripciones = ref("")
@@ -23,18 +25,19 @@
 
     const cargarOpciones = async() => {
         try{
-            const fus = await api.get("cargar/fusion")
-            const cle = await api.get("cargar/clear")
-            const tra = await api.get("cargar/track")
-            const pun = await api.get("cargar/tip")
-            const tipo = await api.get("cargar/tipe")
+            if(props.eleccion == "bey"){
+                const fus = await api.get("cargar/fusion")
+                const cle = await api.get("cargar/clear")
+                const tra = await api.get("cargar/track")
+                const pun = await api.get("cargar/tip")
+                const tipo = await api.get("cargar/tipe")
 
-            fusionWheels.value = fus.data
-            clearWheels.value = cle.data
-            tracks.value = tra.data
-            tips.value = pun.data
-            tipes.value = tipo.data
-
+                fusionWheels.value = fus.data
+                clearWheels.value = cle.data
+                tracks.value = tra.data
+                tips.value = pun.data
+                tipes.value = tipo.data
+            }
             console.log(fusion_wheel.value)
         } catch(error){
             console.error(error)
@@ -42,6 +45,13 @@
     }
 
     const emit = defineEmits(['creation-info'])
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            image.value = file;
+        }
+    }
 
     const emitirCreacion = async()=>{
         let payload = {}
@@ -60,16 +70,22 @@
                 break
             
             case 'bey':
-                payload = {
-                    tipo: 'bey',
-                    nombre: nombre.value,
-                    descripcion: descripcion.value,
-                    fusion: fusion_wheel.value,
-                    clear: clear_wheel.value,
-                    track: track.value,
-                    tip: tip.value,
-                    tipe: tipe.value
+                // Use FormData for file upload
+                const formData = new FormData();
+                formData.append('tipo', 'bey');
+                formData.append('nombre', nombre.value);
+                formData.append('descripcion', descripcion.value);
+                formData.append('fusion', fusion_wheel.value);
+                formData.append('clear', clear_wheel.value);
+                formData.append('track', track.value);
+                formData.append('tip', tip.value);
+                formData.append('tipe', tipe.value);
+                formData.append('color', color.value)
+                if (image.value) {
+                    formData.append('image', image.value);
                 }
+                
+                payload = formData;
                 break
         }
         emit('creation-info', payload)
@@ -79,44 +95,44 @@
 </script>
 <template>
     <form action="post">
-        <div class="campos">
-            <div class="camposFusion" v-if="eleccion === 'fusion'">
-                <h3>Nombre</h3>
-                <input type="text" v-model="nombre">
-                <h3>Descripción</h3>
-                <textarea v-model="descripcion" rows="4" cols="100"></textarea>
+        <div class="relative flex flex-col justify-center items-center p-6 m-6 border-2 border-black rounded-lg gap-4 bg-white w-fit">
+            <div  v-if="eleccion === 'fusion'">
+                <h3 class="text-sm">Nombre</h3>
+                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
+                <h3 class="text-sm">Descripción</h3>
+                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
             </div>
             <div class="camposClear" v-if="eleccion === 'clear'">
-                <h3>Nombre</h3>
-                <input type="text" v-model="nombre">
-                <h3>Descripción</h3>
-                <textarea v-model="descripcion" rows="4" cols="100"></textarea>
+                <h3 class="text-sm">Nombre</h3>
+                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
+                <h3 class="text-sm">Descripción</h3>
+                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
             </div>
             <div class="camposTrack" v-if="eleccion === 'track'">
-                <h3>Nombre</h3>
-                <input type="text" v-model="nombre">
-                <h3>Descripción</h3>
-                <textarea v-model="descripcion" rows="4" cols="100"></textarea>
+                <h3 class="text-sm">Nombre</h3>
+                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
+                <h3 class="text-sm">Descripción</h3>
+                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
             </div>
             <div class="camposTip" v-if="eleccion === 'tip'">
-                <h3>Nombre</h3>
-                <input type="text" v-model="nombre">
-                <h3>Descripción</h3>
-                <textarea v-model="descripcion" rows="4" cols="100"></textarea>
+                <h3 class="text-sm">Nombre</h3>
+                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
+                <h3 class="text-sm">Descripción</h3>
+                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
             </div>
             <div class="camposTipe" v-if="eleccion === 'tipe'">
-                <h3>Nombre</h3>
-                <input type="text" v-model="nombre">
-                <h3>Descripción</h3>
-                <textarea v-model="descripcion" rows="4" cols="100"></textarea>
+                <h3 class="text-sm">Nombre</h3>
+                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
+                <h3 class="text-sm">Descripción</h3>
+                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
             </div>
             <div class="camposBey" v-if="eleccion === 'bey'">
-                <h3>Nombre</h3>
-                <input type="text" v-model="nombre">
-                <h3>Descripción</h3>
-                <textarea v-model="descripcion" rows="4" cols="100"></textarea>
-                <h3>Fusion Wheel</h3>
-                <select v-model="fusion_wheel">
+                <h3 class="text-sm">Nombre</h3>
+                <input placeholder="Agrega el nombre del beyblade" class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
+                <h3 class="text-sm">Descripción</h3>
+                <textarea placeholder="Agrega una descripción del beyblade" class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
+                <h3 class="text-sm">Fusion Wheel</h3>
+                <select class="bg-gray-200 w-[300px]" v-model="fusion_wheel">
                     <option disabled value="">Seleccionar Rueda de fusion</option>
                     <option 
                         v-for="f in fusionWheels"
@@ -125,9 +141,9 @@
                     {{ f.nombre }}
                     </option>
                 </select>
-                <h3>Clear Wheel</h3>
-                <select  v-model="clear_wheel">
-                    <option disabled value="">Seleccionar Aro de energía</option>
+                <h3 class="text-sm">Clear Wheel</h3>
+                <select class="bg-gray-200 w-[300px]" v-model="clear_wheel">
+                    <option disabled>Seleccionar Aro de energía</option>
                     <option
                         v-for="c in clearWheels" 
                         :key="c.id"
@@ -135,8 +151,8 @@
                         {{ c.nombre }}
                     </option>
                 </select>
-                <h3>Spin Track</h3>
-                <select  v-model="track">
+                <h3 class="text-sm">Spin Track</h3>
+                <select  class="bg-gray-200 w-[300px]" v-model="track">
                     <option disabled value="">Seleccionar Eje de rotación</option>
                     <option
                         v-for="t in tracks" 
@@ -145,8 +161,8 @@
                         {{ t.nombre }}
                     </option>
                 </select>
-                <h3>Tip</h3>
-                <select v-model="tip">
+                <h3 class="text-sm">Tip</h3>
+                <select class="bg-gray-200 w-[300px]" v-model="tip">
                     <option disabled value="">Seleccionar Punta de rendimiento</option>
                     <option
                         v-for="t in tips"
@@ -155,8 +171,8 @@
                         {{ t.nombre }}
                     </option>
                 </select>                                                      
-                <h3>Tipe</h3>
-                <select  v-model="tipe">
+                <h3 class="text-sm">Tipe</h3>
+                <select class="bg-gray-200 w-[300px]" v-model="tipe">
                     <option disabled value="">Seleccionar Tipo</option>
                     <option 
                         v-for="t in tipes"
@@ -165,8 +181,16 @@
                         {{ t.nombre }}
                     </option>
                 </select>
+                <h3 class="text-sm">Color Predominante</h3>
+                <input class="bg-gray-200 w-[300px]" v-model="color" type="text" placeholder="Ingresa color en ingles o codigo de color" >
+                <h3 class="text-sm">Imagen</h3>
+                <div class="flex justify-center border-2 border-black bg-gray-200 max-w-md p-6 h-auto mb-4 mr-6 rounded-lg">
+                    <input type="file" @change="handleImageChange" accept="image/*">
+                </div>
             </div>
-            <BaseButton :color="'Cyan'" @click="emitirCreacion()">Crear</BaseButton>
+            <router-link to="/home">
+                <BaseButton :color="'Cyan'" @click="emitirCreacion()">Crear</BaseButton>
+            </router-link>
         </div>
     </form>
 
@@ -193,6 +217,7 @@
 
     .campos h3{
         margin: 0;
+        color: azure;
     }
 
     .form{
