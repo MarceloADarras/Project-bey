@@ -92,21 +92,21 @@
                     <router-link :to="{name: 'Home', params:{season: 'Fusion'}}">
                         <div
                             class="flex justify-center border-2 border-black w-fit h-[200px] rounded-lg hover:scale-110 transition-all duration-200">
-                            <img class="w-[400px] h-auto rounded-lg" src="public/img/Beyblade Metal Fusion.webp" alt="">
+                            <img class="w-[400px] h-auto rounded-lg" src="public/img/Beyblade_Metal_Fusion.webp" alt="">
                         </div>
                     </router-link>
 
                     <router-link :to="{name: 'Home', params:{season: 'Masters'}}">
                         <div
                             class="flex justify-center border-2 border-black w-fit h-[200px] rounded-lg hover:scale-110 transition-all duration-200">
-                            <img class="w-[400px] h-auto rounded-lg" src="public/img/Beyblade Metal Masters.webp" alt="">
+                            <img class="w-[400px] h-auto rounded-lg" src="public/img/Beyblade_Metal_Masters.webp" alt="">
                         </div>
                     </router-link>
 
                     <router-link :to="{name: 'Home', params:{season: 'Fury'}}">
                         <div
                             class="flex justify-center border-2 border-black w-fit h-[200px] rounded-lg hover:scale-110 transition-all duration-200">
-                            <img class="w-[400px] h-auto rounded-lg" src="public/img/Beyblade Metal Fury.png" alt="">
+                            <img class="w-[400px] h-auto rounded-lg" src="public/img/Beyblade_Metal_Fury.png" alt="">
                         </div>
                     </router-link>
                 </div>
