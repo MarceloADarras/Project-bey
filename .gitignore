@@ -7,6 +7,4 @@ backend/media
 
 backend/api/models/
 
-backend/*/migrations
-
 frontend/node_modules/
