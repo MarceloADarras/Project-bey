@@ -13,12 +13,20 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-from dotenv import load_dotenv 
+import dj_database_url
+try:
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv() 
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,7 +36,7 @@ load_dotenv()
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -71,7 +79,7 @@ SITE_ID = 1
 ROOT_URLCONF = 'general.urls'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "http://https://project-beystory-one.vercel.app/",
 ]
 
 TEMPLATES = [
@@ -96,7 +104,12 @@ WSGI_APPLICATION = 'general.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = ''
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600
+    )
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
