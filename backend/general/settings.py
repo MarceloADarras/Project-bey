@@ -79,7 +79,7 @@ SITE_ID = 1
 ROOT_URLCONF = 'general.urls'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://https://project-beystory-one.vercel.app/",
+    "https://project-beystory-one.vercel.app",
 ]
 
 TEMPLATES = [
