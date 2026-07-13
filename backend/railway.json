@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python manage.py makemigrations --no-input && python manage.py migrate --no-input && gunicorn tu_proyecto.wsgi",
+    "startCommand": "python manage.py makemigrations --no-input && python manage.py migrate --no-input && gunicorn general.wsgi",
     "restartPolicyType": "ON_FAILURE"
   }
 }
