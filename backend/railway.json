@@ -5,7 +5,7 @@
     "watchPatterns": ["backend/**"]
   },
   "deploy": {
-    "startCommand": "cd backend && gunicorn general.wsgi",
+    "startCommand": "gunicorn general.wsgi",
     "restartPolicyType": "ON_FAILURE"
   }
 }
