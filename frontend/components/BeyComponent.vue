@@ -23,17 +23,6 @@
     const showDetails = computed(() => {
         return prop.fusion || prop.clear || prop.track || prop.tip || prop.tipe
     })
-
-    const IMAGEN_POR_DEFECTO = 'img/image.png';
-
-    const obtenerRutaImagen = (rutaImagen) => {
-        if(!rutaImagen) return IMAGEN_POR_DEFECTO;
-        return rutaImagen;
-    };
-
-    const restaurarImagen = (event) => {
-        event.target.src = IMAGEN_POR_DEFECTO;
-    };
 </script>
 
 <template>
@@ -41,9 +30,9 @@
         <!-- Main info - always shown -->
         <div class="flex items-center justify-center font-sans p-6 bg-white text-black" :class="{'border-2 border-black': !compact}">
             <img 
-                :src="obtenerRutaImagen(photo)" 
-                @error="restaurarImagen"
-                alt="Imagen beyblade"
+                v-if="photo"
+                :src="photo ? `https://project-bey-production.up.railway.app${photo}` : ''" 
+    
                 class="w-24 h-auto mr-6"
             >
             <div class="max-w-md text-center">
