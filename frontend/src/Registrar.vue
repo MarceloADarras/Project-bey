@@ -46,9 +46,9 @@ const registrar = async() => {
                     <h3 class="text-sm">Nombre de usuario</h3>
                     <input class="bg-gray-200" type="text" v-model="nombreUsuario">
                     <h3 class="text-sm">Contraseña</h3>
-                    <input class="bg-gray-200" type="text" v-model="pass1">
+                    <input class="bg-gray-200" type="password" v-model="pass1">
                     <h3 class="text-sm">Confirmar Contraseña</h3>
-                    <input class="bg-gray-200" type="text" v-model="pass2">
+                    <input class="bg-gray-200" type="password" v-model="pass2">
                 </div>
                 <BaseButton :color="'Cyan'" @accion="registrar">Rergistrar</BaseButton>
             </div>
