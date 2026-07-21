@@ -101,10 +101,10 @@
 <template>
     <Header></Header>
     
-    <div class="flex items-center justify-center p-6">
-        <div class="flex items-center justify-center gap-4">
+    <div class="flex flex-col items-center justify-center p-6 max-w-5xl mx-auto min-h-[calc(100vh-64px)]">
+        <div class="glass-card flex flex-col md:flex-row items-center justify-center gap-8 p-8 rounded-2xl w-full">
             <div class="flex flex-col items-center justify-center gap-4">
-                <img :src="bey.photo ? `http://127.0.0.1:8000${bey.photo}` : '../img/image.png'" class="h-auto w-[300px]">
+                <img :src="bey.photo ? `http://127.0.0.1:8000${bey.photo}` : '../img/image.png'" class="h-auto w-64 object-contain rounded-xl shadow-lg border border-white/20 p-2 bg-black/20">
                 <BeyComponent
                     :nombre="bey.nombre"
                     :descripcion="bey.descripcion"
@@ -113,26 +113,30 @@
 
             <div class="contenedor-detalles">
 
-                <div class="detalle" type="button" @click="abrirModalF">
+                <div class="detalle glass-card" type="button" @click="abrirModalF">
                     <h2>Fusion Wheel</h2>
                 </div>
 
-                <div class="detalle" type="button" @click="abrirModalC">
+                <div class="detalle glass-card" type="button" @click="abrirModalC">
                     <h2>Clear Wheel</h2>
                 </div>
 
-                <div class="detalle" type="button" @click="abrirModalT">
+                <div class="detalle glass-card" type="button" @click="abrirModalT">
                     <h2>Spin Track</h2>
                 </div>
 
-                <div class="detalle" type="button" @click="abrirModalTi">
+                <div class="detalle glass-card" type="button" @click="abrirModalTi">
                     <h2>Performance Tip</h2>
                 </div>
 
-                <div class="detalle" type="button" @click="abrirModalTipe">
+                <div class="detalle glass-card" type="button" @click="abrirModalTipe">
                     <h2>Tipe</h2>
                 </div>
             </div>
+        </div>
+
+        <div class="flex justify-center mt-6">
+            <BaseButton :color="'#E63946'" :hover-color="'#C1121F'" @click="abrirModal()">Eliminar</BaseButton>
         </div>
     </div>
 
@@ -171,108 +175,67 @@
         @cerrar="cerrarModalTipe()"
     ></ModalDetalleComponent>
 
-    <div class="flex justify-center mt-4 p-4">
-        <BaseButton :color="'#A61C1C'" :hover-color="'#E63946'" @click="abrirModal()">Eliminar</BaseButton>
-    </div>
-
     <ModalEliminarComponent
         v-if="mostrarModal"
         :texto="'¿Seguro de que quieres eliminar el Beyblade?'"
         :textoBoton="'Eliminar'"
         :textoBoton2="'Cancelar'"
-        :color="'Red'"
-        :hover-color="'Cyan'"
+        :color="'#E63946'"
+        :hover-color="'#B71C1C'"
         @eliminar="eliminarBey()"
         @cancelar="cerrarModal()"
     ></ModalEliminarComponent>
 </template>
-<style>
-.main-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: calc(100vh - 70px);
-    padding: 20px;
-}
-
-.content-wrapper {
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-    max-width: 1200px;
-    width: 100%;
-}
-
-.contenedor-detalles{
+<style scoped>
+.contenedor-detalles {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 10px;
     flex: 0 0 auto;
 }
 
-.detalle{
+.detalle {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 150px;
-    height: 150px;
-    padding: 20px;
-    border: 2px solid #FF6B35;
+    width: 140px;
+    height: 140px;
+    padding: 16px;
+    border: 2px solid rgba(255, 107, 53, 0.7);
     border-radius: 50%;
-    transition: all 0.3s ease;
-    background: #ffff;
+    transition: all 0.25s ease;
+    background: rgba(15, 23, 42, 0.9);
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
 }
 
-.detalle:hover{
-    transform: scale(1.1);
-    background: rgba(230, 57, 70, 0.7);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    border: 2px solid #000;
-    border-color: #000;
+.detalle:hover {
+    transform: scale(1.08) translateY(-2px);
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.9) 0%, rgba(255, 107, 53, 0.9) 100%);
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.4);
+    border-color: #FFA500;
 }
 
 .detalle:hover h2 {
-    color: #000;
+    color: #FFFFFF;
 }
 
 .detalle h2 {
     margin: 0;
-    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
     font-weight: 600;
-    color: #E63946;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    color: #FF6B35;
+    transition: color 0.2s ease;
 }
 
-.eliminar-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-/* Responsive design */
 @media (max-width: 768px) {
-    .content-wrapper {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-    
     .contenedor-detalles {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
         width: 100%;
     }
-    
-    .detalle {
-        flex: 0 0 auto;
-    }
-    
-    .eliminar-container {
-        margin-top: 30px;
-    }
 }
-</style>
+</style>

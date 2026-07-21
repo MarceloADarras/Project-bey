@@ -7,8 +7,13 @@ import App from './App.vue'
 import index from "../router"
 
 import './style.css'
+import { useTheme } from './theme'
+
+const { initTheme } = useTheme()
+initTheme()
 
 const app = createApp(App)
+
 
 const api = axios.create({
     baseURL: "https://project-bey-production.up.railway.app/api",

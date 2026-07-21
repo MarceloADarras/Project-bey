@@ -102,160 +102,158 @@
     cargarOpciones()
 </script>
 <template>
-    <form action="post">
-        <div class="relative flex flex-col justify-center items-center p-6 m-6 border-2 border-black rounded-lg gap-4 bg-white w-fit">
-            <div  v-if="eleccion === 'fusion'">
-                <h3 class="text-sm">Nombre</h3>
-                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
-                <h3 class="text-sm">Descripción</h3>
-                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
-            </div>
-            <div class="camposClear" v-if="eleccion === 'clear'">
-                <h3 class="text-sm">Nombre</h3>
-                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
-                <h3 class="text-sm">Descripción</h3>
-                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
-            </div>
-            <div class="camposTrack" v-if="eleccion === 'track'">
-                <h3 class="text-sm">Nombre</h3>
-                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
-                <h3 class="text-sm">Descripción</h3>
-                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
-            </div>
-            <div class="camposTip" v-if="eleccion === 'tip'">
-                <h3 class="text-sm">Nombre</h3>
-                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
-                <h3 class="text-sm">Descripción</h3>
-                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
-            </div>
-            <div class="camposTipe" v-if="eleccion === 'tipe'">
-                <h3 class="text-sm">Nombre</h3>
-                <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
-                <h3 class="text-sm">Descripción</h3>
-                <textarea class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
-            </div>
-            <div class="camposBey" v-if="eleccion === 'bey'">
-                <h3 class="text-sm">Nombre</h3>
-                <input placeholder="Agrega el nombre del beyblade" class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
-                <h3 class="text-sm">Descripción</h3>
-                <textarea placeholder="Agrega una descripción del beyblade" class="bg-gray-200" v-model="descripcion" rows="4" cols="100"></textarea>
-                <h3 class="text-sm">Fusion Wheel</h3>
-                <select class="bg-gray-200 w-[300px]" v-model="fusion_wheel">
-                    <option disabled value="">Seleccionar Rueda de fusion</option>
-                    <option 
-                        v-for="f in fusionWheels"
-                        :key="f.id"
-                        :value="f.id">
-                    {{ f.nombre }}
-                    </option>
-                </select>
-                <h3 class="text-sm">Clear Wheel</h3>
-                <select class="bg-gray-200 w-[300px]" v-model="clear_wheel">
-                    <option disabled>Seleccionar Aro de energía</option>
-                    <option
-                        v-for="c in clearWheels" 
-                        :key="c.id"
-                        :value="c.id">
-                        {{ c.nombre }}
-                    </option>
-                </select>
-                <h3 class="text-sm">Spin Track</h3>
-                <select  class="bg-gray-200 w-[300px]" v-model="track">
-                    <option disabled value="">Seleccionar Eje de rotación</option>
-                    <option
-                        v-for="t in tracks" 
-                        :key="t.id"
-                        :value="t.id">
-                        {{ t.nombre }}
-                    </option>
-                </select>
-                <h3 class="text-sm">Tip</h3>
-                <select class="bg-gray-200 w-[300px]" v-model="tip">
-                    <option disabled value="">Seleccionar Punta de rendimiento</option>
-                    <option
-                        v-for="t in tips"
-                        :key="t.id" 
-                        :value="t.id">
-                        {{ t.nombre }}
-                    </option>
-                </select>                                                      
-                <h3 class="text-sm">Tipe</h3>
-                <select class="bg-gray-200 w-[300px]" v-model="tipe">
-                    <option disabled value="">Seleccionar Tipo</option>
-                    <option 
-                        v-for="t in tipes"
-                        :key="t.id"
-                        :value="t.id">
-                        {{ t.nombre }}
-                    </option>
-                </select>
-                <h3 class="text-sm">Temporada</h3>
-                <select class="bg-gray-200 w-[300px]" v-model="season">
-                    <option class="text-gray-200" disabled value="">Seleccionar la temporada</option>
-                    <option value="Metal Fusion">Metal Fusion</option>
-                    <option value="Metal Masters">Metal Masters</option>
-                    <option value="Metal Fury">Metal Fury</option>
-                </select>
-                <h3 class="text-sm">Sistema</h3>
-                <select class="bg-gray-200 w-[300px]" v-model="sistema">
-                    <option disabled value="">Seleccionar el sistema del beyblade</option>
-                    <option value="Pre-Hybrid">Sistema Pre-Hibrido</option>
-                    <option value="Hybrid">Sistema Hibrido</option>
-                    <option value="4D">Sitema 4D</option>
-                </select>
-                <h3 class="text-sm">Color Predominante</h3>
-                <input class="bg-gray-200 w-[300px]" v-model="color" type="text" placeholder="Ingresa color en ingles o codigo de color" >
-                <h3 class="text-sm">Imagen</h3>
-                <div class="flex justify-center border-2 border-black bg-gray-200 max-w-md p-6 h-auto mb-4 mr-6 rounded-lg">
-                    <input type="file" @change="handleImageChange" accept="image/*">
+    <form @submit.prevent="emitirCreacion" class="w-full max-w-2xl">
+        <div class="glass-card relative flex flex-col justify-center items-center p-8 rounded-2xl gap-5 w-full shadow-xl text-slate-900">
+            <div v-if="eleccion === 'fusion'" class="w-full space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
+                    <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                    <textarea class="w-full bg-white/90 border border-slate-300 text-slate-900 p-3 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="descripcion" rows="4"></textarea>
                 </div>
             </div>
-            <router-link to="/home">
-                <BaseButton :color="'Cyan'" @click="emitirCreacion()">Crear</BaseButton>
-            </router-link>
+
+            <div v-if="eleccion === 'clear'" class="w-full space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
+                    <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                    <textarea class="w-full bg-white/90 border border-slate-300 text-slate-900 p-3 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="descripcion" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div v-if="eleccion === 'track'" class="w-full space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
+                    <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                    <textarea class="w-full bg-white/90 border border-slate-300 text-slate-900 p-3 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="descripcion" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div v-if="eleccion === 'tip'" class="w-full space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
+                    <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                    <textarea class="w-full bg-white/90 border border-slate-300 text-slate-900 p-3 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="descripcion" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div v-if="eleccion === 'tipe'" class="w-full space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
+                    <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                    <textarea class="w-full bg-white/90 border border-slate-300 text-slate-900 p-3 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="descripcion" rows="4"></textarea>
+                </div>
+            </div>
+
+            <div v-if="eleccion === 'bey'" class="w-full space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
+                    <input placeholder="Agrega el nombre del beyblade" class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                    <textarea placeholder="Agrega una descripción del beyblade" class="w-full bg-white/90 border border-slate-300 text-slate-900 p-3 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="descripcion" rows="3"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Fusion Wheel</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="fusion_wheel">
+                            <option disabled value="">Seleccionar Rueda de fusión</option>
+                            <option v-for="f in fusionWheels" :key="f.id" :value="f.id">{{ f.nombre }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Clear Wheel</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="clear_wheel">
+                            <option disabled value="">Seleccionar Aro de energía</option>
+                            <option v-for="c in clearWheels" :key="c.id" :value="c.id">{{ c.nombre }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Spin Track</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="track">
+                            <option disabled value="">Seleccionar Eje de rotación</option>
+                            <option v-for="t in tracks" :key="t.id" :value="t.id">{{ t.nombre }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tip</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="tip">
+                            <option disabled value="">Seleccionar Punta de rendimiento</option>
+                            <option v-for="t in tips" :key="t.id" :value="t.id">{{ t.nombre }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tipe</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="tipe">
+                            <option disabled value="">Seleccionar Tipo</option>
+                            <option v-for="t in tipes" :key="t.id" :value="t.id">{{ t.nombre }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Temporada</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="season">
+                            <option disabled value="">Seleccionar la temporada</option>
+                            <option value="Metal Fusion">Metal Fusion</option>
+                            <option value="Metal Masters">Metal Masters</option>
+                            <option value="Metal Fury">Metal Fury</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Sistema</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="sistema">
+                            <option disabled value="">Seleccionar el sistema</option>
+                            <option value="Pre-Hybrid">Sistema Pre-Híbrido</option>
+                            <option value="Hybrid">Sistema Híbrido</option>
+                            <option value="4D">Sistema 4D</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Color Predominante</label>
+                        <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" v-model="color" type="text" placeholder="Código hex o nombre en inglés">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Imagen</label>
+                    <div class="border border-slate-300 bg-white/90 p-4 rounded-xl shadow-inner">
+                        <input type="file" @change="handleImageChange" accept="image/*" class="text-xs text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-white hover:file:bg-amber-600">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <BaseButton color="#FF6B35" hoverColor="#E63946" @click="emitirCreacion()">Crear</BaseButton>
+            </div>
         </div>
     </form>
-
 </template>
-<style>
-    .campos{
-        display: flex;
-        flex-direction: column;
-        margin: 10px;
-    }
-    .campos.camposFusion{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin: 10px;
-        max-width: 500px;
-        align-items: stretch;
-        
-    }
 
-    .campos.camposFusion input{
-        height: 30px;
-    }
 
-    .campos h3{
-        margin: 0;
-        color: azure;
-    }
-
-    .form{
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-
-    }
-
-    .form form{
-        width: 100%;
-        max-width: 500px;
-    }
-
-    .crear{
-        display: block;
-        margin: 20px auto;
-    }
-</style>
+<style scoped>
+</style>

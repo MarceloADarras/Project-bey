@@ -80,132 +80,103 @@
 <template>
     <Header></Header>
 
-
-        <div v-if="user && token">
-            <div v-if="!seleccion" class="flex flex-col justify-center items-center min-h-screen gap-6">
-
-                <div class="border-2 border-black bg-white text-black font-bold text-[24px] px-6 py-2 rounded-lg">
-                    <h1>Selecciona una temporada</h1>
-                </div>
-
-                <div class="flex gap-4">
-                    <router-link :to="{name: 'Home', params:{season: 'Fusion'}}">
-                        <div
-                            class="flex justify-center border-2 border-black w-fit h-[200px] rounded-lg hover:scale-110 transition-all duration-200">
-                            <img class="w-[400px] h-auto rounded-lg" :src="'/img/Beyblade_metal_fusion.webp'" alt="">
-                        </div>
-                    </router-link>
-
-                    <router-link :to="{name: 'Home', params:{season: 'Masters'}}">
-                        <div
-                            class="flex justify-center border-2 border-black w-fit h-[200px] rounded-lg hover:scale-110 transition-all duration-200">
-                            <img class="w-[400px] h-auto rounded-lg" :src="'/img/Beyblade_metal_masters.webp'" alt="">
-                        </div>
-                    </router-link>
-
-                    <router-link :to="{name: 'Home', params:{season: 'Fury'}}">
-                        <div
-                            class="flex justify-center border-2 border-black w-fit h-[200px] rounded-lg hover:scale-110 transition-all duration-200">
-                            <img class="w-[400px] h-auto rounded-lg" :src="'/img/Beyblade_Metal_Fury.png'" alt="">
-                        </div>
-                    </router-link>
-                </div>
-
-
-                <div class="flex justify-center">
-                    <div class="border rounded-lg bg-white mt-10 w-fit">
-                        <p class="rainbow-text text-2xl font-bold text-center">Más temporadas pronto...</p>
-                    </div>
-                </div>
-
+    <div v-if="user && token" class="min-h-[calc(100vh-64px)] p-6">
+        <div v-if="!seleccion" class="flex flex-col justify-center items-center py-12 gap-8 max-w-5xl mx-auto">
+            <div class="glass-card text-slate-900 dark:text-slate-100 font-bold text-2xl px-8 py-4 rounded-2xl">
+                <h1>Selecciona una temporada</h1>
             </div>
-            <div v-if="seleccion">
-                <div>
-                    <div class="flex justify-center p-6">
-                        <div class="flex justify-center gap-2 bg-white w-fit rounded-lg">
-                            <h1 class="font-bold text-[24px]">{{ seleccion }}</h1>
-                            <button @click="$router.push({name: 'Home'})" class="ml-4 bg-red-500 text-white px-2 rounded">X</button>
-                        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl px-4">
+                <router-link :to="{name: 'Home', params:{season: 'Fusion'}}" class="group">
+                    <div class="glass-card rounded-2xl p-2 group-hover:border-amber-500 group-hover:scale-105 transition-all duration-300 overflow-hidden">
+                        <img class="w-full h-48 object-cover rounded-xl" :src="'/img/Beyblade_metal_fusion.webp'" alt="Metal Fusion">
                     </div>
-                    <div class="flex justify-center gap-4">
-                        
-                        <form @submit.prevent = "buscar">
-                            <input type="text" v-model="busqueda" class="w-[300px] h-[40px] border-2 border-black rounded-lg">
-                            <button class="bg-blue-500 rounded-lg px-4 py-2 m-6 hover:scale-110 transition transform duration-100 ease-in">Buscar</button>
-                        </form>
-                    </div>
-                </div>
-                <div v-if="beyblades.length != 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 max-w-7xl mx-auto">
-                    <div v-for="bey in beyblades" :key="bey.id" class="flex justify-center p-4 border-2 border-black rounded-[20%] transition duration-300 hover:scale-110 bg-white text-black">
-                        <router-link class="no-underline text-black" :to="{name: 'Ver', params:{id : bey.id}}" >
-                            <BeyComponent
-                                :photo="bey.photo"
-                                :nombre="bey.nombre"
-                                :color="bey.color"
-                                :compact="true"
-                            />
-                        </router-link>
-                    </div>
-                </div>
-            </div>
-            <div v-if="seleccion === 'Main'" class="flex justify-center p-6">
-                <div class="flex flex-col items-center justify-center gap-4 px-4 py-2 border rounded-lg bg-white w-fit">
-                    <h1>¡NO HAY BEYBLADES CREADOS!</h1>
-                    <p>Añade beyblades ahora</p>
-                    <router-link to="/create/bey">
-                        <button class="px-4 py-2 border-2 border-black rounded-lg bg-blue-200 hover:scale-110 hover:bg-blue-500 transition-all transform duration-200">Añadir beyblades</button>
-                    </router-link>
-                </div>
-            </div>
-        </div>
-        <div class="relative min-h-screen flex items-center justify-center" v-else>
-            
-            <div class="relative flex flex-col items-center text-center border-2 border-black bg-white max-w-md p-6 rounded-lg gap-2" >
-                <h1 class="font-bold text-black text-[24px] mb-6 italic">Inicia sesión para conectar con otros bladers</h1>
-                <router-link to="/iniciar">
-                    <BaseButton color="#E88B3A">Iniciar Sesion</BaseButton>
                 </router-link>
-                <div class="gap-4">
-                    <div class="bottom-2 right-6 text-[10px] text-gray-600 whitespace-nowrap gap-4">
-                        <h3 >
-                            ¿No estás registrado? 
-                            <router-link to="/registro" class="text-blue-600 hover:text-red-500">Registrate aqui</router-link>
-                            y unete a beystory
-                        </h3>
+
+                <router-link :to="{name: 'Home', params:{season: 'Masters'}}" class="group">
+                    <div class="glass-card rounded-2xl p-2 group-hover:border-amber-500 group-hover:scale-105 transition-all duration-300 overflow-hidden">
+                        <img class="w-full h-48 object-cover rounded-xl" :src="'/img/Beyblade_metal_masters.webp'" alt="Metal Masters">
                     </div>
+                </router-link>
+
+                <router-link :to="{name: 'Home', params:{season: 'Fury'}}" class="group">
+                    <div class="glass-card rounded-2xl p-2 group-hover:border-amber-500 group-hover:scale-105 transition-all duration-300 overflow-hidden">
+                        <img class="w-full h-48 object-cover rounded-xl" :src="'/img/Beyblade_Metal_Fury.png'" alt="Metal Fury">
+                    </div>
+                </router-link>
+            </div>
+
+            <div class="flex justify-center mt-4">
+                <div class="glass-card px-6 py-3 rounded-xl">
+                    <p class="text-lg font-semibold text-orange-600 dark:text-amber-400 text-center">Más temporadas pronto...</p>
                 </div>
             </div>
         </div>
 
+        <div v-if="seleccion" class="max-w-7xl mx-auto">
+            <div>
+                <div class="flex justify-center p-4">
+                    <div class="flex items-center gap-3 glass-card px-6 py-3 rounded-2xl">
+                        <h1 class="font-bold text-2xl text-slate-900 dark:text-slate-100">{{ seleccion }}</h1>
+                        <button @click="$router.push({name: 'Home'})" class="ml-3 bg-red-500 hover:bg-red-600 text-white w-7 h-7 flex items-center justify-center rounded-lg text-sm transition-colors shadow-sm">✕</button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center my-4">
+                    <form @submit.prevent="buscar" class="flex items-center gap-3 glass-card p-2 rounded-2xl">
+                        <input type="text" v-model="busqueda" placeholder="Buscar Beyblade..." class="w-64 md:w-80 px-4 py-2 bg-white/90 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl focus:outline-none focus:border-amber-500 transition-colors shadow-inner">
+                        <button class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold rounded-xl px-5 py-2 transition-all shadow-md">Buscar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div v-if="beyblades.length != 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 max-w-7xl mx-auto">
+                <div v-for="bey in beyblades" :key="bey.id" class="glass-card flex justify-center p-3 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:border-amber-500 overflow-hidden">
+                    <router-link class="no-underline text-slate-900 dark:text-slate-100 w-full" :to="{name: 'Ver', params:{id : bey.id}}" >
+                        <BeyComponent
+                            :photo="bey.photo"
+                            :nombre="bey.nombre"
+                            :color="bey.color"
+                            :compact="true"
+                        />
+                    </router-link>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="seleccion === 'Main'" class="flex justify-center p-6">
+            <div class="glass-card flex flex-col items-center justify-center gap-4 p-6 rounded-2xl text-slate-900 dark:text-slate-100">
+                <h1 class="text-xl font-bold">¡NO HAY BEYBLADES CREADOS!</h1>
+                <p class="text-slate-600 dark:text-slate-300">Añade beyblades ahora</p>
+                <router-link to="/create/bey">
+                    <button class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold hover:opacity-90 transition-opacity shadow-md">Añadir beyblades</button>
+                </router-link>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative min-h-[calc(100vh-64px)] flex items-center justify-center p-6" v-else>
+        <div class="glass-card relative flex flex-col items-center text-center max-w-md p-8 rounded-2xl gap-4">
+            <h1 class="font-bold text-slate-900 dark:text-slate-100 text-2xl mb-2">Inicia sesión para conectar con otros bladers</h1>
+            <router-link to="/iniciar">
+                <BaseButton color="#FF6B35" hoverColor="#E63946">Iniciar Sesión</BaseButton>
+            </router-link>
+            <div class="mt-2 text-xs text-slate-600 dark:text-slate-400">
+                <p>
+                    ¿No estás registrado? 
+                    <router-link to="/registro" class="text-orange-600 dark:text-amber-400 hover:text-red-600 dark:hover:text-amber-300 font-semibold underline ml-1">Regístrate aquí</router-link>
+                    y únete a BeyStory
+                </p>
+            </div>
+        </div>
+    </div>
 </template>
 
-<style>
 
-    @keyframes rainbow {
-        0% { background-position: 0% 50%;}
-        50% { background-position: 100% 50%;}
-        100% { background-position: 0% 50%;}
-    }
 
-    .rainbow-text{
-        background: linear-gradient(
-            90deg,
-            #ff0000,
-            #ff7f00,
-            #ffff00,
-            #00ff00,
-            #0000ff,
-            #4b0082,
-            #8f00ff
-        );
-        background-size: 400% 400%;
-        animation: rainbow 6s ease infinite;
-        -webkit-background-clip: text;  
-        -webkit-text-fill-color: transparent;
-    }
 
-    .link{
+<style scoped>
+    .link {
         text-decoration: none;
-        color: black;
     }
-</style>
+</style>

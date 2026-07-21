@@ -7,6 +7,7 @@ import Inicio from '@/Inicio.vue'
 import CrearChat from '@/CrearChatView.vue'
 import ChatsView from '@/ChatsView.vue'
 import ChatView from '@/ChatView.vue'
+import SettingsView from '@/SettingsView.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -55,8 +56,14 @@ const router = createRouter({
             path: '/chat/:id',
             name: 'Chat',
             component: ChatView
+        },
+        {
+            path: '/settings',
+            name: 'Settings',
+            component: SettingsView
         }
     ]
 })
+
 
 export default router

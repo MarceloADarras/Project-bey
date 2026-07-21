@@ -39,7 +39,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
     'project-bey-production.up.railway.app'
+    "localhost",
 ]
 
 
@@ -81,6 +83,8 @@ SITE_ID = 1
 ROOT_URLCONF = 'general.urls'
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://project-beystory-one.vercel.app",
 ]
 

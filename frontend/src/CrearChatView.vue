@@ -42,25 +42,31 @@ cargarUsuarios()
 </script>
 <template>
     <Header></Header>
-    <div class="flex flex-col items-center justify-center gap-4 p-6">
-        <div class="border-2 border-black p-6 bg-white rounded-lg">
-            <h1 class="font-bold text-[24px] text-black">Crear Chat</h1>
-        </div>
-        <form action="post">
-            <div class="flex flex-col items-center justify-center m-6 p-6 gap-4 border-2 border-black rounded-lg bg-white w-fit">
+    <div class="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-6">
+        <form @submit.prevent="crearChat" class="w-full max-w-md">
+            <div class="glass-card flex flex-col items-center justify-center p-8 gap-5 rounded-2xl shadow-xl text-slate-900 w-full">
+                <h1 class="font-bold text-2xl text-slate-900">Crear Chat</h1>
                 
-                    <div class="flex flex-col p-6 gap-4">
-                        <h3 class="text-sm underline">Usuario para creación</h3>
-                        <select class="bg-gray-200 w-[300px]" required v-model="usuario">
-                            <option disabled selected>Selecciona un usuario</option>
-                            <option v-for="usuario in usuariosFiltrados" :key="usuario.id" :value="usuario.id">{{ usuario.username }}</option>
+                <div class="flex flex-col gap-4 w-full">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Usuario para creación</label>
+                        <select class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" required v-model="usuario">
+                            <option disabled value="" selected>Selecciona un usuario</option>
+                            <option v-for="u in usuariosFiltrados" :key="u.id" :value="u.id">{{ u.username }}</option>
                         </select>
-                        <h3 class="text-sm underline">Nombre para el chat</h3>
-                        <input class="bg-gray-200 w-[300px]" type="text" v-model="nombre">
                     </div>
-                    <BaseButton color="cyan" @click="crearChat()">Crear</BaseButton>
-                
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre para el chat</label>
+                        <input class="w-full bg-white/90 border border-slate-300 text-slate-900 px-3 py-2.5 rounded-xl focus:outline-none focus:border-amber-500 shadow-inner" type="text" v-model="nombre" required placeholder="Escribe el nombre del chat">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <BaseButton color="#FF6B35" hoverColor="#E63946" @click="crearChat()">Crear</BaseButton>
+                </div>
             </div>
         </form>
     </div>
 </template>
+

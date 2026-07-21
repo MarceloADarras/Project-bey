@@ -67,31 +67,31 @@ onMounted(() => {
 })
 </script>
 <template>
-    <div class="flex flex-col h-screen">
+    <div class="flex flex-col h-screen overflow-hidden text-slate-900">
         <Header></Header>
         
         <!-- Chat Header -->
-        <div class="bg-gray-100 p-4 border-b flex-shrink-0">
-            <div class="flex justify-end">
-                <button @click="abrirEliminar()" class="px-6 py-2 bg-red-500 rounded-lg hover:bg-red-900 transition-colors text-white">Eliminar Chat</button>
+        <div class="glass-card p-4 flex-shrink-0 border-b border-slate-200">
+            <div class="flex items-center justify-between max-w-5xl mx-auto">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900">{{ chatContent?.nombre || 'Chat' }}</h1>
+                    <div class="text-xs text-slate-600 mt-1">
+                        Participantes: {{ chatContent?.usuarios?.map(u => u.username).join(', ') || '' }}
+                    </div>
+                </div>
+                <button @click="abrirEliminar()" class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl transition-colors text-white text-xs font-semibold shadow-sm">Eliminar Chat</button>
             </div>
-            <h1 class="text-xl font-bold">{{ chatContent?.nombre || 'Chat' }}</h1>
-            <div class="text-sm text-gray-600">
-                Participantes: {{ chatContent?.usuarios?.map(u => u.username).join(', ') || '' }}
-            </div>
-            
-            
         </div>
 
         <!-- Messages Container -->
-        <div class="flex-1 overflow-y-auto p-4 space-y-4 pb-4 gap-4">
-            <div v-if="!chatContent" class="text-center text-gray-500">
+        <div class="flex-1 overflow-y-auto p-4 max-w-5xl mx-auto w-full space-y-4">
+            <div v-if="!chatContent" class="text-center text-slate-500 py-8">
                 Cargando chat...
             </div>
-            <div v-else-if="!chatContent.mensajes || chatContent.mensajes.length === 0" class="text-center font-bold text-black bg-white">
+            <div v-else-if="!chatContent.mensajes || chatContent.mensajes.length === 0" class="glass-card text-center font-medium text-slate-600 py-8 rounded-2xl">
                 No hay mensajes en este chat
             </div>
-            <div v-else class="flex flex-col space-y-4">
+            <div v-else class="flex flex-col space-y-3">
                 <div 
                     v-for="mensajeItem in chatContent.mensajes" 
                     :key="mensajeItem.id"
@@ -99,12 +99,12 @@ onMounted(() => {
                     :class="mensajeItem.usuario === userNombre ? 'justify-end' : 'justify-start'"
                 >
                     <div 
-                        class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg"
+                        class="max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl shadow-sm text-xs"
                         :class="mensajeItem.usuario === userNombre
-                            ? ' bg-blue-500 text-white ' 
-                            : 'bg-gray-200 text-gray-800'"
+                            ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-br-none' 
+                            : 'glass-card text-slate-900 rounded-bl-none'"
                     >
-                        <div class="text-xs font-semibold mb-1">
+                        <div class="font-semibold opacity-90 mb-1">
                             {{ mensajeItem.usuario }}
                         </div>
                         <div v-if="mensajeItem.texto" class="text-sm">
@@ -116,7 +116,7 @@ onMounted(() => {
                         <div v-if="mensajeItem.archivo" class="text-xs mt-1">
                             📎 Archivo adjunto
                         </div>
-                        <div class="text-xs opacity-75 mt-1">
+                        <div class="text-[10px] opacity-75 mt-1 text-right">
                             {{ new Date(mensajeItem.created_at).toLocaleTimeString() }}
                         </div>
                     </div>
@@ -124,21 +124,22 @@ onMounted(() => {
             </div>
         </div>
 
-        <!-- Message Input - Always at bottom -->
-        <div class="border-t p-4 bg-white flex-shrink-0">
-            <div class="flex items-center space-x-2">
+        <!-- Message Input -->
+        <div class="glass-card p-4 flex-shrink-0 border-t border-slate-200">
+            <div class="flex items-center space-x-3 max-w-5xl mx-auto">
                 <input 
-                    class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    class="flex-1 px-4 py-2.5 bg-white/90 border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 text-slate-900 text-sm shadow-inner" 
                     placeholder="Escribe un mensaje..." 
                     v-model="mensajeInput"
                     type="text"
                     @keyup.enter="enviarMensaje()"
                 >
-                <button @click="enviarMensaje()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                <button @click="enviarMensaje()" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity text-sm shadow-md">
                     Enviar
                 </button>
             </div>
         </div>
     </div>
-    <ModalEliminarComponent v-if="modalEliminar" :texto="'¿Desea Eliminar el chat?'" :texto-boton="'Eliminar'" :texto-boton2="'Cancelar'" color="red" @cancelar="cerrarModal()" @eliminar="eliminarChat()"></ModalEliminarComponent>
+    <ModalEliminarComponent v-if="modalEliminar" :texto="'¿Desea Eliminar el chat?'" :texto-boton="'Eliminar'" :texto-boton2="'Cancelar'" color="#E63946" @cancelar="cerrarModal()" @eliminar="eliminarChat()"></ModalEliminarComponent>
 </template>
+

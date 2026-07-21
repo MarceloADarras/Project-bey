@@ -45,8 +45,8 @@ cargarChats()
 </script>
 <template>
     <Header></Header>
-    <div class="flex justify-end p-6">
-        <button @click="chatOpen = !chatOpen" class="electric-button border-2 border-black rounded-xl p-6 bg-green-800 hover:scale-110 transition-all duration-200 hover:brightness-125">🤖</button>
+    <div class="flex justify-end p-6 max-w-5xl mx-auto">
+        <button @click="chatOpen = !chatOpen" class="w-14 h-14 flex items-center justify-center text-2xl bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl shadow-xl hover:scale-105 transition-all text-white">🤖</button>
     </div>
     <transition
         enter-active-class="transition duration-300 ease-out"
@@ -58,14 +58,14 @@ cargarChats()
     >
         <div
             v-if="chatOpen"
-            class=" energy-box fixed bottom-24 right-6 w-80 h-96 bg-white border-2 border-black rounded-xl shadow-2xl flex flex-col z-40"
+            class="glass-card fixed bottom-24 right-6 w-80 h-96 rounded-2xl shadow-2xl flex flex-col z-40 overflow-hidden text-slate-900"
         >
-            <div class="bg-blue-600 text-white p-3 rounded-t-xl flex justify-between items-center">
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white p-3 flex justify-between items-center shadow-md">
                 <div class="flex items-center gap-2 cursor-pointer" @click="showInfo = !showInfo">
-                    <span class="robot-avatar text-2xl">🤖</span>
-                    <span class="font-bold">BeyBot</span>
+                    <span class="text-2xl">🤖</span>
+                    <span class="font-bold text-sm">BeyBot</span>
                 </div>
-                <button @click="chatOpen = false" class=" rounded-lg p-2 hover:bg-red-900 transition-all transform duration-200 hover:scale-110 ">✖</button>
+                <button @click="chatOpen = false" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-black/20 transition-colors">✕</button>
             </div>
             <transition
                 enter-active-class="transition duration-300"
@@ -77,7 +77,7 @@ cargarChats()
             >
                 <div
                     v-if="showInfo"
-                    class="absolute top-14 right-4 bg-white text-black text-xs p-3 rounded-lg shadow-lg w-60"
+                    class="absolute top-14 right-4 bg-white/95 text-slate-800 text-xs p-3 rounded-xl border border-slate-200 shadow-xl w-60 z-10"
                 >
                     ⚡ Soy BeyBot, tu asistente de BeyStory.
                     Puedo ayudarte a buscar beyblades, explicar piezas
@@ -85,89 +85,43 @@ cargarChats()
                 </div>
             </transition>
 
-            <div class="flex-1 p-3 overflow-y-auto text-sm">
-                <p v-if="!mensaje" class="text-gray-500">Bienvenido Blader ⚡</p>
-                <div v-for="(m, index) in mensajes" :key="index" class="gap-4">
+            <div class="flex-1 p-3 overflow-y-auto text-sm space-y-3">
+                <p v-if="mensajes.length === 0" class="text-slate-500 text-center py-4">Bienvenido Blader ⚡</p>
+                <div v-for="(m, index) in mensajes" :key="index">
                     <div v-if="m.role === 'user'" class="flex justify-end">
-                        <div  class="flex justify-right border px-4 py-2 rounded-lg bg-blue-500 w-fit">
-                            <p >{{ m.text }}</p>
+                        <div class="px-3 py-2 rounded-xl bg-orange-500 text-white max-w-[80%] text-xs shadow-sm">
+                            <p>{{ m.text }}</p>
                         </div>
                     </div>
-                    <div v-else class="flex justify-start border px-4 py-2 rounded-lg bg-gray-300 w-fit">
-                        <p>{{ m.text }}</p>
+                    <div v-else class="flex justify-start">
+                        <div class="px-3 py-2 rounded-xl bg-white/90 border border-slate-200 text-slate-800 max-w-[80%] text-xs shadow-sm">
+                            <p>{{ m.text }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </div>
 
-            <div class="p-3 border-t flex gap-2">
-                <input type="text" placeholder="Escribe un mensaje..." class="flex-1 border rounded px-2 py-1 text-sm" v-model="mensaje">
-                <button class="bg-blue-500 text-white px-3 rounded hover:bg-blue-700 transition duration-200" @click="enviarMensaje()">➤</button>
+            <div class="p-3 border-t border-slate-200/80 flex gap-2 bg-white/60">
+                <input type="text" placeholder="Escribe un mensaje..." class="flex-1 bg-white/90 border border-slate-300 text-slate-900 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-amber-500 shadow-inner" v-model="mensaje" @keyup.enter="enviarMensaje">
+                <button class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1.5 rounded-xl hover:opacity-90 transition-opacity text-xs font-semibold shadow-sm" @click="enviarMensaje()">➤</button>
             </div>
         </div>
     </transition>
-    <div class="flex items-center justify-center gap-4 p-6">
-        <div class="flex flex-col justify-center gap-4 p-6 border rounded-lg bg-white hover:scale-110 transition transform duration-300 ease-in w-fit" v-for="chat in chats" :key="chat.id">
-            <router-link :to="{name:'Chat', params:{id: chat.id}}">
-                <h1 class="font-bold text-[24px]">{{ chat.nombre }}</h1>
+
+    <div class="flex flex-wrap items-center justify-center gap-6 p-6 max-w-5xl mx-auto">
+        <div class="glass-card flex flex-col justify-center p-6 rounded-2xl hover:border-amber-500 hover:-translate-y-1 transition-all duration-200 w-64 shadow-xl text-slate-900" v-for="chat in chats" :key="chat.id">
+            <router-link :to="{name:'Chat', params:{id: chat.id}}" class="no-underline">
+                <h1 class="font-bold text-xl text-slate-900 text-center hover:text-orange-600 transition-colors">{{ chat.nombre }}</h1>
             </router-link>
         </div>
     </div>
-    <div class="flex flex-col items-center justify-center">
-        
+    <div class="flex flex-col items-center justify-center mt-4">
         <router-link to="/create/chat">
-            <BaseButton color="#CF3F25">Crear Chat</BaseButton>
+            <BaseButton color="#FF6B35" hoverColor="#E63946">Crear Chat</BaseButton>
         </router-link>
     </div>
 </template>
-<style>
-.electric-button::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(120deg, transparent 40%, rgba(0, 255, 255, 0.6), transparent 60%);
-    transform: translateX(-100%);
-    animation: lightning 2s infinite;
-}
 
-@keyframes lightning {
-    0% { transform: translateX(-100%)}
-    50% { transform: translateX(100%)}
-    100% { transform: translateX(100%)}
-}
 
-.electric-button{
-    position: relative;
-    overflow: hidden;
-}
-
-@keyframes materialize {
-    0% {
-    opacity: 0;
-    transform: scale(0.6) rotate(-10deg);
-    filter: blur(10px);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.05) rotate(2deg);
-    filter: blur(0px);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
-
-}
-
-@keyframes robotFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
-}
-
-.energy-box {
-  animation: materialize 0.4s ease-out forwards;
-}
-
-.robot-avatar {
-  animation: robotFloat 2s ease-in-out infinite;
-}
-</style>
+<style scoped>
+</style>
