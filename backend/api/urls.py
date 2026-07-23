@@ -34,6 +34,14 @@ urlpatterns = [
     path('editar/perfil', editar_perfil_usuario, name="editar_perfil_usuario"),
     path('verificar/password', verificar_password, name="verificar_password"),
     path('cambiar/password', cambiar_password, name="cambiar_password"),
+    # Reportes y Sugerencias endpoints
+    path('crear/reporte', crear_reporte, name="crear_reporte"),
+    path('cargar/reportes', cargar_reportes, name="cargar_reportes"),
+    path('responder/reporte/<int:pk>', responder_reporte, name="responder_reporte"),
+    path('admin/cambiar/password', admin_cambiar_password, name="admin_cambiar_password"),
+    path('admin/dar/admin', dar_permisos_admin, name="admin-dar-admin"),
 ]
 
-
+
+
+

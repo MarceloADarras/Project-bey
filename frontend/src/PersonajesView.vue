@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Header from '../components/HeaderComponent.vue';
 import CardPersonaje from '../components/CardPersonaje.vue';
 import ModalEliminarComponent from '../components/ModalEliminarComponent.vue';
 import ModalEditarPersonajeComponent from '../components/ModalEditarPersonajeComponent.vue';
+import ModalSugerirComponent from '../components/ModalSugerirComponent.vue';
 import api from './main';
 
 const personajes = ref([]);
@@ -12,6 +13,11 @@ const cargando = ref(true);
 const personajeAEditarId = ref(null);
 const personajeAEliminar = ref(null);
 const eliminando = ref(false);
+const mostrarModalSugerir = ref(false);
+
+const localUserRaw = localStorage.getItem('user');
+const localUser = localUserRaw ? JSON.parse(localUserRaw) : null;
+const esAdmin = computed(() => localUser?.is_staff || localUser?.is_superuser || false);
 
 const cargarPersonajes = async () => {
     try {
@@ -63,13 +69,23 @@ onMounted(() => {
                 <h1 class="font-bold text-3xl text-slate-900 dark:text-slate-100">Bladers & Personajes</h1>
                 <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Conoce a los personajes legendarios de BeyStory y sus Beyblades asociados.</p>
             </div>
-            <router-link 
-                v-if="personajes.length > 0"
-                to="/create/personaje" 
-                class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-extrabold shadow-lg transition-all hover:scale-105 no-underline flex items-center gap-1.5 flex-shrink-0"
-            >
-                <span>➕</span> Crear Personaje
-            </router-link>
+            
+            <template v-if="personajes.length > 0">
+                <router-link 
+                    v-if="esAdmin"
+                    to="/create/personaje" 
+                    class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-extrabold shadow-lg transition-all hover:scale-105 no-underline flex items-center gap-1.5 flex-shrink-0"
+                >
+                    <span>➕</span> Crear Personaje
+                </router-link>
+                <button 
+                    v-else
+                    @click="mostrarModalSugerir = true"
+                    class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-extrabold shadow-lg transition-all hover:scale-105 flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                >
+                    <span>💡</span> Sugerir Personaje
+                </button>
+            </template>
         </div>
 
         <!-- Loading State -->
@@ -86,12 +102,21 @@ onMounted(() => {
                 <p class="text-xs text-slate-600 dark:text-slate-300">Sé el primero en registrar a un blader legendario en la plataforma.</p>
             </div>
             <router-link 
+                v-if="esAdmin"
                 to="/create/personaje" 
                 class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-2xl text-sm font-extrabold shadow-xl transition-all hover:scale-105 no-underline flex items-center justify-center gap-2"
             >
                 <span>➕</span> Crear Personaje
             </router-link>
+            <button 
+                v-else
+                @click="mostrarModalSugerir = true" 
+                class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-2xl text-sm font-extrabold shadow-xl transition-all hover:scale-105 flex items-center justify-center gap-2 cursor-pointer"
+            >
+                <span>💡</span> Sugerir Personaje
+            </button>
         </div>
+
 
 
         <!-- Characters Grid -->
@@ -132,7 +157,15 @@ onMounted(() => {
         @cancelar="personajeAEliminar = null"
         @eliminar="confirmarEliminar"
     />
+
+    <!-- Suggestion Modal for Normal Users -->
+    <ModalSugerirComponent 
+        v-if="mostrarModalSugerir" 
+        tipo="personaje" 
+        @cerrar="mostrarModalSugerir = false" 
+    />
 </template>
+
 
 <style scoped>
 </style>

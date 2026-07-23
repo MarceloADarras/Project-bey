@@ -125,7 +125,7 @@ class UserRegistrationSerializer(RegisterSerializer):
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
         data["first_name"] = self.validated_data.get("first_name", "")
-        data["last_name"] = self.validated_data.get("first_name", "")
+        data["last_name"] = self.validated_data.get("last_name", "")
         return data
     
     def save(self, request):
@@ -133,4 +133,4 @@ class UserRegistrationSerializer(RegisterSerializer):
         user.first_name = self.cleaned_data.get("first_name", "")
         user.last_name = self.cleaned_data.get("last_name", "")
         user.save()
-        return user
+        return user

@@ -10,19 +10,24 @@ from api.models import chatUsuario
 
 @api_view(["GET"])
 def cargar_usuarios(request):
-    usuarios = User.objects.all()
+    usuarios = User.objects.all().order_by('id')
 
     data = []
     for i in usuarios:
-        list = {
-            "id" : i.id,
-            "nombre" : i.first_name + " " + i.last_name,
-            "correo" : i.email,
-            "username" : i.username
-        }
-        data.append(list)
+        data.append({
+            "id": i.id,
+            "nombre": f"{i.first_name} {i.last_name}".strip() or i.username,
+            "first_name": i.first_name,
+            "last_name": i.last_name,
+            "correo": i.email,
+            "username": i.username,
+            "is_staff": i.is_staff or i.is_superuser,
+            "is_superuser": i.is_superuser,
+            "date_joined": i.date_joined.strftime("%d/%m/%Y") if i.date_joined else None
+        })
     
     return Response(data)
+
 
 
 @api_view(["GET"])
@@ -59,9 +64,11 @@ def cargar_perfil_usuario(request, pk=None):
             "date_joined": user_obj.date_joined.strftime("%d/%m/%Y") if user_obj.date_joined else None,
             "last_login": user_obj.last_login.strftime("%d/%m/%Y %H:%M") if user_obj.last_login else None,
             "chats_count": chats_count,
-            "is_staff": user_obj.is_staff
+            "is_staff": user_obj.is_staff or user_obj.is_superuser,
+            "is_superuser": user_obj.is_superuser
         }
         return Response(data, status=status.HTTP_200_OK)
+
     except Exception as e:
         return Response({"error": f"Error al cargar perfil: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -187,5 +194,84 @@ def cambiar_password(request):
         return Response({"message": "Contraseña cambiada con éxito"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": f"Error al cambiar contraseña: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def admin_cambiar_password(request):
+    try:
+        requester_id = request.data.get("admin_id")
+        requester = None
+        if request.user and request.user.is_authenticated:
+            requester = request.user
+        elif requester_id:
+            try:
+                requester = User.objects.get(pk=requester_id)
+            except User.DoesNotExist:
+                pass
+
+        if not requester or not (requester.is_staff or requester.is_superuser):
+            return Response({"error": "No tienes permisos de administrador para realizar esta acción"}, status=status.HTTP_403_FORBIDDEN)
+
+        target_user_id = request.data.get("target_user_id")
+        nueva_password = request.data.get("nueva_password", "").strip()
+
+        if not target_user_id:
+            return Response({"error": "Debe especificar el usuario a modificar"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not nueva_password or len(nueva_password) < 6:
+            return Response({"error": "La nueva contraseña debe tener al menos 6 caracteres"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            target_user = User.objects.get(pk=target_user_id)
+        except User.DoesNotExist:
+            return Response({"error": "El usuario objetivo no fue encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        target_user.set_password(nueva_password)
+        target_user.save()
+
+        return Response({
+            "message": f"La contraseña del usuario '{target_user.username}' ha sido restablecida con éxito."
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": f"Error al cambiar contraseña de emergencia: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def dar_permisos_admin(request):
+    try:
+        requester_id = request.data.get("admin_id")
+        requester = None
+        if request.user and request.user.is_authenticated:
+             requester = request.user
+        elif requester_id:
+            try:
+                requester = User.objects.get(pk=requester_id)
+            except User.DoesNotExist:
+                pass
+        
+        if not requester or not (requester.is_staff or requester.is_superuser):
+                    return Response({"error": "No tienes permisos de administrador para realizar esta acción"}, status=status.HTTP_403_FORBIDDEN)
+
+        target_user_id = request.data.get("target_user_id")
+
+        if not target_user_id:
+            return Response({"error": "Debe especificar el usuario a modificar"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            target_user = User.objects.get(pk=target_user_id)
+        except User.DoesNotExist:
+            return Response({"error": "El usuario objetivo no fue encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        target_user.is_staffr = True
+        target_user.save()
+
+        return Response({
+                "message": "Se han otorgado permisos de administrador correctamente"
+        }, status=status.HTTP_200_OK)
+
+
+
+    except Exception as e:
+        return Response({"error": f"Error al dar permisos de administrador: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

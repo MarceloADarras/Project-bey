@@ -2,6 +2,7 @@
 import Header from '../components/HeaderComponent.vue';
 import ModalEliminarComponent from '../components/ModalEliminarComponent.vue';
 import ModalEditarPersonajeComponent from '../components/ModalEditarPersonajeComponent.vue';
+import ModalSugerirComponent from '../components/ModalSugerirComponent.vue';
 import api from './main';
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -14,7 +15,12 @@ const cargando = ref(true);
 
 const mostrarModalEditar = ref(false);
 const mostrarModalEliminar = ref(false);
+const mostrarModalSugerir = ref(false);
 const eliminando = ref(false);
+
+const localUserRaw = localStorage.getItem('user');
+const localUser = localUserRaw ? JSON.parse(localUserRaw) : null;
+const esAdmin = computed(() => localUser?.is_staff || localUser?.is_superuser || false);
 
 const cargarPersonaje = async (targetId = route.params.id) => {
     if (!targetId) return;
@@ -96,23 +102,34 @@ onMounted(() => {
             <div class="glass-card flex flex-col md:flex-row items-center gap-8 p-8 rounded-3xl w-full shadow-2xl relative">
                 <!-- Action Buttons Top Corner -->
                 <div class="absolute top-4 right-4 flex items-center gap-2">
+                    <template v-if="esAdmin">
+                        <button 
+                            type="button" 
+                            @click="mostrarModalEditar = true" 
+                            class="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500 text-amber-600 dark:text-amber-300 hover:text-white border border-amber-500/40 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                            title="Editar personaje"
+                        >
+                            <span>✏️</span> Editar
+                        </button>
+                        <button 
+                            type="button" 
+                            @click="mostrarModalEliminar = true" 
+                            class="px-3 py-1.5 bg-red-500/15 hover:bg-red-500 text-red-600 dark:text-red-300 hover:text-white border border-red-500/40 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm"
+                            title="Eliminar personaje"
+                        >
+                            <span>🗑️</span> Eliminar
+                        </button>
+                    </template>
                     <button 
+                        v-else
                         type="button" 
-                        @click="mostrarModalEditar = true" 
-                        class="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500 text-amber-600 dark:text-amber-300 hover:text-white border border-amber-500/40 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm"
-                        title="Editar personaje"
+                        @click="mostrarModalSugerir = true" 
+                        class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-extrabold shadow-md transition-all flex items-center gap-1 cursor-pointer"
                     >
-                        <span>✏️</span> Editar
-                    </button>
-                    <button 
-                        type="button" 
-                        @click="mostrarModalEliminar = true" 
-                        class="px-3 py-1.5 bg-red-500/15 hover:bg-red-500 text-red-600 dark:text-red-300 hover:text-white border border-red-500/40 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shadow-sm"
-                        title="Eliminar personaje"
-                    >
-                        <span>🗑️</span> Eliminar
+                        <span>💡</span> Sugerir Cambio
                     </button>
                 </div>
+
 
                 <!-- Character Image -->
                 <div class="relative w-56 h-56 rounded-2xl overflow-hidden border-2 border-white/40 dark:border-slate-700 bg-black/20 flex items-center justify-center flex-shrink-0 shadow-lg">
@@ -228,7 +245,15 @@ onMounted(() => {
         @cancelar="mostrarModalEliminar = false"
         @eliminar="eliminarPersonaje"
     />
+
+    <!-- Suggestion Modal for Normal Users -->
+    <ModalSugerirComponent 
+        v-if="mostrarModalSugerir" 
+        tipo="personaje" 
+        @cerrar="mostrarModalSugerir = false" 
+    />
 </template>
+
 
 <style scoped>
 </style>

@@ -12,6 +12,8 @@ import PersonajesView from '@/PersonajesView.vue'
 import VerPersonaje from '@/VerPersonaje.vue'
 import CrearPersonajeView from '@/CrearPersonajeView.vue'
 import PerfilView from '@/PerfilView.vue'
+import ReportesView from '@/ReportesView.vue'
+import UsersView from '@/UsersView.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -77,6 +79,11 @@ const router = createRouter({
             component: PerfilView
         },
         {
+            path: '/reportes',
+            name: 'Reportes',
+            component: ReportesView
+        },
+        {
             path: '/personajes',
             name: 'Personajes',
             component: PersonajesView
@@ -85,11 +92,17 @@ const router = createRouter({
             path: '/ver/personaje/:id',
             name: 'VerPersonaje',
             component: VerPersonaje
+        },
+        {
+            path: '/ver/usuarios',
+            name: 'UsersView',
+            component: UsersView
         }
     ]
 })
 
 
 
+
 export default router
-
+

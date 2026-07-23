@@ -109,3 +109,23 @@ class Personaje(models.Model):
         return f"{self.nombre}"
 
 
+class Reporte(models.Model):
+    ESTADOS = (
+        ('pendiente', 'En Revisión'),
+        ('aceptado', 'Aceptado'),
+        ('rechazado', 'Rechazado'),
+    )
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reportes")
+    tipo = models.CharField(max_length=50, default="beyblade")  # 'beyblade' o 'personaje'
+    nombre = models.CharField(max_length=200, null=False)
+    descripcion = models.TextField(default="", blank=True)
+    opcional = models.TextField(default="", blank=True)  # Info adicional
+    estado = models.CharField(max_length=20, choices=ESTADOS, default="pendiente")
+    created_at = models.DateTimeField(auto_now_add=True)
+    fecha_respuesta = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Reporte ({self.tipo}) - {self.nombre} - {self.get_estado_display()}"
+
+
+

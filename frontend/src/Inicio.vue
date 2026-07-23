@@ -37,10 +37,20 @@ const login = async() => {
 
         if (access) {
             localStorage.setItem("auth_token", typeof access === 'string' ? access : JSON.stringify(access));
-            if (user) {
-                localStorage.setItem("user", typeof user === 'string' ? user : JSON.stringify(user));
-            } else {
-                localStorage.setItem("user", JSON.stringify({ username: username.value }));
+            
+            // Initial save
+            let initialUser = user ? (typeof user === 'string' ? JSON.parse(user) : user) : { username: username.value };
+            localStorage.setItem("user", JSON.stringify(initialUser));
+
+            // Fetch full profile from backend to get fresh is_staff & is_superuser status
+            try {
+                const resPerfil = await api.get('perfil/usuario');
+                if (resPerfil.data) {
+                    const fullUser = { ...initialUser, ...resPerfil.data };
+                    localStorage.setItem("user", JSON.stringify(fullUser));
+                }
+            } catch (err) {
+                console.log('Error cargando perfil tras login:', err);
             }
 
             mensajeCarga.value = '¡Sesión verificada! Redirigiendo a la pantalla principal...';
@@ -48,11 +58,12 @@ const login = async() => {
             setTimeout(() => {
                 cargando.value = false;
                 router.push('/home');
-            }, 1000);
+            }, 600);
         } else {
             cargando.value = false;
             errorMsg.value = 'Respuesta inesperada del servidor. Intenta de nuevo.';
         }
+
 
     } catch(error) {
         cargando.value = false;

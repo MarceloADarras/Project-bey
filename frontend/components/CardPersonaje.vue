@@ -15,6 +15,10 @@ const props = defineProps({
 
 const emit = defineEmits(['editar', 'eliminar']);
 
+const localUserRaw = localStorage.getItem('user');
+const localUser = localUserRaw ? JSON.parse(localUserRaw) : null;
+const esAdmin = computed(() => localUser?.is_staff || localUser?.is_superuser || false);
+
 const displayBeybladesText = computed(() => {
     if (props.beyblades && props.beyblades.length > 0) {
         return props.beyblades.map(b => b.nombre).join(', ');
@@ -25,8 +29,8 @@ const displayBeybladesText = computed(() => {
 
 <template>
     <div class="glass-card flex flex-col items-center justify-between p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-500 shadow-xl overflow-hidden cursor-pointer group text-slate-900 dark:text-slate-100 w-full max-w-xs relative">
-        <!-- Top Action Buttons (Edit / Delete) -->
-        <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
+        <!-- Top Action Buttons (Edit / Delete) - ADMIN ONLY -->
+        <div v-if="esAdmin" class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
             <button 
                 type="button" 
                 @click.stop.prevent="emit('editar', id)" 
@@ -44,6 +48,7 @@ const displayBeybladesText = computed(() => {
                 🗑️
             </button>
         </div>
+
 
         <router-link :to="{ name: 'VerPersonaje', params: { id: id } }" class="no-underline text-inherit w-full flex flex-col items-center gap-4">
             <!-- Character Image / Avatar Container -->

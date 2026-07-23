@@ -3,12 +3,13 @@
     import router from '../router';
     import { useRoute, useRouter } from 'vue-router';
     import api from './main';
-    import { ref, watch } from 'vue';
+    import { ref, computed, watch } from 'vue';
     import BeyComponent from '../components/BeyComponent.vue';
     import BaseButton from '../components/BaseButton.vue';
     import ModalEliminarComponent from '../components/ModalEliminarComponent.vue';
     import ModalDetalleComponent from '../components/ModalDetalleComponent.vue';
     import ModalEditarBeyComponent from '../components/ModalEditarBeyComponent.vue';
+    import ModalSugerirComponent from '../components/ModalSugerirComponent.vue';
 
     const route = useRoute();
     const ruta = useRouter();
@@ -16,6 +17,7 @@
 
     const mostrarModal = ref(false);
     const mostrarModalEditar = ref(false);
+    const mostrarModalSugerir = ref(false);
 
     const mostrarModalF = ref(false);
     const mostrarModalC = ref(false);
@@ -24,6 +26,10 @@
     const mostrarModalTipe = ref(false);
 
     const bey = ref({});
+
+    const localUserRaw = localStorage.getItem('user');
+    const localUser = localUserRaw ? JSON.parse(localUserRaw) : null;
+    const esAdmin = computed(() => localUser?.is_staff || localUser?.is_superuser || false);
 
     const getPhotoUrl = (photo) => {
         if (!photo) return '/img/image.png';
@@ -110,8 +116,11 @@
         </div>
 
         <div class="flex items-center justify-center gap-4 mt-6">
-            <BaseButton :color="'#FF6B35'" :hover-color="'#E63946'" @click="mostrarModalEditar = true">✏️ Editar Beyblade</BaseButton>
-            <BaseButton :color="'#E63946'" :hover-color="'#C1121F'" @click="abrirModal()">🗑️ Eliminar</BaseButton>
+            <template v-if="esAdmin">
+                <BaseButton :color="'#FF6B35'" :hover-color="'#E63946'" @click="mostrarModalEditar = true">✏️ Editar Beyblade</BaseButton>
+                <BaseButton :color="'#E63946'" :hover-color="'#C1121F'" @click="abrirModal()">🗑️ Eliminar</BaseButton>
+            </template>
+            <BaseButton v-else :color="'#FF6B35'" :hover-color="'#E63946'" @click="mostrarModalSugerir = true">💡 Sugerir Cambio / Beyblade</BaseButton>
         </div>
     </div>
 
@@ -121,6 +130,13 @@
         :bey-id="id"
         @cerrar="mostrarModalEditar = false"
         @actualizado="cargarBeyblade"
+    />
+
+    <!-- Suggestion Modal for Normal Users -->
+    <ModalSugerirComponent 
+        v-if="mostrarModalSugerir" 
+        tipo="beyblade" 
+        @cerrar="mostrarModalSugerir = false" 
     />
 
     <ModalDetalleComponent
@@ -169,6 +185,7 @@
         @cancelar="cerrarModal()"
     ></ModalEliminarComponent>
 </template>
+
 
 <style scoped>
 .contenedor-detalles {
