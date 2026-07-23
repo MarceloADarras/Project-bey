@@ -3,31 +3,37 @@
     import router from '../router';
     import { useRoute, useRouter } from 'vue-router';
     import api from './main';
-    import { ref, resolveDirective, watch } from 'vue';
+    import { ref, watch } from 'vue';
     import BeyComponent from '../components/BeyComponent.vue';
     import BaseButton from '../components/BaseButton.vue';
     import ModalEliminarComponent from '../components/ModalEliminarComponent.vue';
     import ModalDetalleComponent from '../components/ModalDetalleComponent.vue';
-
+    import ModalEditarBeyComponent from '../components/ModalEditarBeyComponent.vue';
 
     const route = useRoute();
     const ruta = useRouter();
-    const id = route.params.id
+    const id = route.params.id;
 
-    const mostrarModal = ref(false)
+    const mostrarModal = ref(false);
+    const mostrarModalEditar = ref(false);
 
-    const mostrarModalF = ref(false)
-    const mostrarModalC = ref(false)
-    const mostrarModalT = ref(false)
-    const mostrarModalTi = ref(false)
-    const mostrarModalTipe = ref(false)
+    const mostrarModalF = ref(false);
+    const mostrarModalC = ref(false);
+    const mostrarModalT = ref(false);
+    const mostrarModalTi = ref(false);
+    const mostrarModalTipe = ref(false);
 
     const bey = ref({});
+
+    const getPhotoUrl = (photo) => {
+        if (!photo) return '/img/image.png';
+        if (photo.startsWith('http')) return photo;
+        return `https://project-bey-production.up.railway.app${photo}`;
+    };
 
     const cargarBeyblade = async() => {
         try{
             const res = await api.get(`cargar/bey/${id}`)
-
             bey.value = res.data
             console.log(bey.value)
         } catch(error){
@@ -38,8 +44,8 @@
     const eliminarBey = async() => {
         try{
             await api.delete(`eliminar/bey/${id}`)
-
             console.log("Eliminación completa")
+            ruta.push('/home');
         } catch(error){
             console.error(error)
         }
@@ -53,58 +59,27 @@
         mostrarModal.value = false
     }
 
-
-    const abrirModalF = () => {
-        mostrarModalF.value = true
-    }
-
-    const cerrarModalF = () => {
-        mostrarModalF.value = false
-    }
-
-    const abrirModalC = () => {
-        mostrarModalC.value = true
-    }
-
-    const cerrarModalC = () => {
-        mostrarModalC.value = false
-    }
-
-    const abrirModalT = () => {
-        mostrarModalT.value = true
-    }
-
-    const cerrarModalT = () => {
-        mostrarModalT.value = false
-    }
-
-    const abrirModalTi = () => {
-        mostrarModalTi.value = true
-    }
-
-    const cerrarModalTi = () => {
-        mostrarModalTi.value = false
-    }
-
-    const abrirModalTipe = () => {
-        mostrarModalTipe.value = true
-    }
-
-    const cerrarModalTipe = () => {
-        mostrarModalTipe.value = false
-    }
-    
+    const abrirModalF = () => { mostrarModalF.value = true }
+    const cerrarModalF = () => { mostrarModalF.value = false }
+    const abrirModalC = () => { mostrarModalC.value = true }
+    const cerrarModalC = () => { mostrarModalC.value = false }
+    const abrirModalT = () => { mostrarModalT.value = true }
+    const cerrarModalT = () => { mostrarModalT.value = false }
+    const abrirModalTi = () => { mostrarModalTi.value = true }
+    const cerrarModalTi = () => { mostrarModalTi.value = false }
+    const abrirModalTipe = () => { mostrarModalTipe.value = true }
+    const cerrarModalTipe = () => { mostrarModalTipe.value = false }
 
     cargarBeyblade()
-
 </script>
+
 <template>
     <Header></Header>
     
     <div class="flex flex-col items-center justify-center p-6 max-w-5xl mx-auto min-h-[calc(100vh-64px)]">
         <div class="glass-card flex flex-col md:flex-row items-center justify-center gap-8 p-8 rounded-2xl w-full">
             <div class="flex flex-col items-center justify-center gap-4">
-                <img :src="bey.photo ? `http://127.0.0.1:8000${bey.photo}` : '../img/image.png'" class="h-auto w-64 object-contain rounded-xl shadow-lg border border-white/20 p-2 bg-black/20">
+                <img :src="getPhotoUrl(bey.photo)" class="h-auto w-64 object-contain rounded-xl shadow-lg border border-white/20 p-2 bg-black/20">
                 <BeyComponent
                     :nombre="bey.nombre"
                     :descripcion="bey.descripcion"
@@ -112,7 +87,6 @@
             </div>
 
             <div class="contenedor-detalles">
-
                 <div class="detalle glass-card" type="button" @click="abrirModalF">
                     <h2>Fusion Wheel</h2>
                 </div>
@@ -135,10 +109,19 @@
             </div>
         </div>
 
-        <div class="flex justify-center mt-6">
-            <BaseButton :color="'#E63946'" :hover-color="'#C1121F'" @click="abrirModal()">Eliminar</BaseButton>
+        <div class="flex items-center justify-center gap-4 mt-6">
+            <BaseButton :color="'#FF6B35'" :hover-color="'#E63946'" @click="mostrarModalEditar = true">✏️ Editar Beyblade</BaseButton>
+            <BaseButton :color="'#E63946'" :hover-color="'#C1121F'" @click="abrirModal()">🗑️ Eliminar</BaseButton>
         </div>
     </div>
+
+    <!-- Edit Beyblade Modal -->
+    <ModalEditarBeyComponent
+        v-if="mostrarModalEditar"
+        :bey-id="id"
+        @cerrar="mostrarModalEditar = false"
+        @actualizado="cargarBeyblade"
+    />
 
     <ModalDetalleComponent
         v-if="mostrarModalF"
@@ -186,6 +169,7 @@
         @cancelar="cerrarModal()"
     ></ModalEliminarComponent>
 </template>
+
 <style scoped>
 .contenedor-detalles {
     display: flex;

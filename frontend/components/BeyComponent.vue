@@ -1,27 +1,37 @@
 <script setup>
-    import { computed } from 'vue'
-    
-    const prop = defineProps({
-        photo: String,
-        nombre: {String, required: true},
-        descripcion: String,
-        fusion: String,
-        descripcion1: String,
-        clear: String,
-        descripcion2: String,
-        track: String,
-        descripcion3: String,
-        tip: String,
-        descripcion4: String,
-        tipe: String,
-        descripcion5: String,
-        color: {String},
-        compact: {type: Boolean, default: false}
-    })
+import { computed } from 'vue'
 
-    const showDetails = computed(() => {
-        return prop.fusion || prop.clear || prop.track || prop.tip || prop.tipe
-    })
+const prop = defineProps({
+    photo: [String, Object],
+    nombre: { type: String, required: true },
+    descripcion: String,
+    fusion: String,
+    descripcion1: String,
+    clear: String,
+    descripcion2: String,
+    track: String,
+    descripcion3: String,
+    tip: String,
+    descripcion4: String,
+    tipe: String,
+    descripcion5: String,
+    color: String,
+    compact: { type: Boolean, default: false }
+})
+
+const showDetails = computed(() => {
+    return prop.fusion || prop.clear || prop.track || prop.tip || prop.tipe
+})
+
+const imageUrl = computed(() => {
+    if (!prop.photo) return '';
+    let url = typeof prop.photo === 'object' ? prop.photo.url || prop.photo.secure_url : prop.photo;
+    if (!url || typeof url !== 'string') return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+    return `https://project-bey-production.up.railway.app${url}`;
+})
 </script>
 
 <template>
@@ -29,8 +39,9 @@
         <!-- Main info -->
         <div class="flex items-center justify-center font-sans p-4 text-slate-900 dark:text-slate-100 bg-white/70 dark:bg-slate-800/80 backdrop-blur-md rounded-xl border border-white/80 dark:border-slate-700/60 shadow-sm" :class="{'shadow-md': !compact}">
             <img 
-                v-if="photo"
-                :src="photo ? `https://project-bey-production.up.railway.app${photo}` : ''" 
+                v-if="imageUrl"
+                :src="imageUrl" 
+                :alt="prop.nombre"
                 class="w-20 h-20 object-contain mr-4 rounded-lg"
             >
             <div class="max-w-md text-center">
@@ -64,6 +75,7 @@
         </div>
     </div>
 </template>
+
 
 
 

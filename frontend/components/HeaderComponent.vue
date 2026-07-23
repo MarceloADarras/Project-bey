@@ -45,19 +45,33 @@ const logout = () => {
                     <router-link class="block px-4 py-2.5 text-slate-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-colors text-sm font-medium" :to="{name: 'Create', params: {nombre: 'tip'}}">Crear Tip</router-link>
                     <router-link class="block px-4 py-2.5 text-slate-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-colors text-sm font-medium" :to="{name: 'Create', params: {nombre: 'tipe'}}">Crear Tipe</router-link>
                     <div class="my-1 border-t border-slate-700/60"></div>
-                    <router-link class="block px-4 py-2.5 text-amber-400 hover:text-amber-300 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold flex items-center gap-2" :to="{name: 'Settings'}">
+                    <router-link class="block px-4 py-2.5 text-slate-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-colors text-sm font-medium flex items-center gap-2" :to="{name: 'CrearPersonaje'}">
+                        <span>👤</span> Crear Personaje
+                    </router-link>
+                    <div class="my-1 border-t border-slate-700/60"></div>
+                    <router-link class="block px-4 py-2.5 text-amber-400 hover:text-amber-300 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold flex items-center gap-2" :to="{name: 'Perfil'}">
+                        <span>👤</span> Mi Perfil
+                    </router-link>
+                    <router-link class="block px-4 py-2.5 text-slate-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-colors text-sm font-medium flex items-center gap-2" :to="{name: 'Settings'}">
                         <span>⚙️</span> Settings
                     </router-link>
                 </div>
 
+
+
             </transition>
             
+            <router-link class="nav-link" :to="{name: 'Home'}">Inicio</router-link>
+            <router-link class="nav-link" :to="{name: 'Personajes'}">Personajes</router-link>
+            <router-link class="nav-link" :to="{name: 'Home', query: {seasons: 'true'}}">Beyblades</router-link>
             <router-link class="nav-link" :to="{name: 'Chats'}">Chats</router-link>
             <button type="button" @click="logout" class="nav-link">LogOut</button>
             <button type="button" @click="open = !open" class="flex items-center justify-center w-9 h-9 ml-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors">☰</button>
+
         </nav>
     </header>
 </template>
+
 
 <style scoped>
     .header {

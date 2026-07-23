@@ -8,6 +8,10 @@ import CrearChat from '@/CrearChatView.vue'
 import ChatsView from '@/ChatsView.vue'
 import ChatView from '@/ChatView.vue'
 import SettingsView from '@/SettingsView.vue'
+import PersonajesView from '@/PersonajesView.vue'
+import VerPersonaje from '@/VerPersonaje.vue'
+import CrearPersonajeView from '@/CrearPersonajeView.vue'
+import PerfilView from '@/PerfilView.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -21,6 +25,11 @@ const router = createRouter({
             path: '/home/:season?',
             name: 'Home',
             component: Home
+        },
+        {
+            path: '/create/personaje',
+            name: 'CrearPersonaje',
+            component: CrearPersonajeView
         },
         {
             path: '/create/:nombre',
@@ -61,9 +70,26 @@ const router = createRouter({
             path: '/settings',
             name: 'Settings',
             component: SettingsView
+        },
+        {
+            path: '/perfil',
+            name: 'Perfil',
+            component: PerfilView
+        },
+        {
+            path: '/personajes',
+            name: 'Personajes',
+            component: PersonajesView
+        },
+        {
+            path: '/ver/personaje/:id',
+            name: 'VerPersonaje',
+            component: VerPersonaje
         }
     ]
 })
 
 
+
 export default router
+

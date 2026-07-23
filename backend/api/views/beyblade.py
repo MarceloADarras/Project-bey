@@ -7,6 +7,31 @@ from django.db import IntegrityError
 from rest_framework.views import APIView
 from api.models import Beyblade, FusionWheel, ClearWheel, SpinTrack, Tip, Tipe
 import json
+import os
+import cloudinary
+import cloudinary.uploader
+
+
+
+cloudinary.config(
+    cloud_name = "gcpljpzi",
+    api_key = os.environ.get("API_KEY"),
+    api_secret = os.environ.get("API_SECRET"),
+    secure = True
+)
+
+
+def _get_image_url(image_field):
+    if not image_field:
+        return None
+    url_str = str(image_field)
+    if url_str.startswith("http://") or url_str.startswith("https://"):
+        return url_str
+    try:
+        return image_field.url
+    except Exception:
+        return url_str
+
 
 
 @api_view(["POST"])
@@ -37,7 +62,16 @@ def crear_beyblade(request):
         color = request.POST.get("color")
         season = request.POST.get("season")
         sistem = request.POST.get("sistem")
-        image = request.FILES.get("image") if 'image' in request.FILES else None
+        image_file = request.FILES.get("image") if 'image' in request.FILES else None
+        if image_file:
+            try:
+                upload_result = cloudinary.uploader.upload(image_file, folder="beyblades")
+                image = upload_result.get("secure_url") or upload_result.get("url")
+            except Exception as cloud_err:
+                print(f"Error subiendo beyblade a Cloudinary: {cloud_err}")
+                image = image_file
+        else:
+            image = None
 
     # Validate required fields
     if not all([nombre, descripcion, fusion_wheel, clear_wheel, spin_track, tip, tipe, color, season, sistem]):
@@ -71,6 +105,7 @@ def crear_beyblade(request):
             {"success": "El Beyblade ha sido agregado correctamente"},
             status=status.HTTP_201_CREATED
         )
+
     except (FusionWheel.DoesNotExist, ClearWheel.DoesNotExist, SpinTrack.DoesNotExist, Tip.DoesNotExist, Tipe.DoesNotExist):
         return Response(
             {"error": "Uno o más componentes no existen"},
@@ -268,7 +303,7 @@ def cargar_beyblades(request):
         lista = {
             "id": i.id,
             "nombre": i.nombre,
-            "photo": i.photo.url if i.photo else None,
+            "photo": _get_image_url(i.photo),
             "color": i.color,
             "season": i.season
         }
@@ -290,24 +325,102 @@ def cargar_bey(request, pk):
         "id": bey.id,
         "nombre": bey.nombre,
         "descripcion": bey.descripcion,
-        "photo": bey.photo.url if bey.photo else None,
+        "photo": _get_image_url(bey.photo),
         "fusion": bey.fusion_wheel.nombre,
-        "descripcion1": bey.fusion_wheel.descripcion,
+        "fusion_id": bey.fusion_wheel.id if bey.fusion_wheel else None,
+        "descripcion1": bey.fusion_wheel.descripcion if bey.fusion_wheel else "",
         "clear": bey.clear_wheel.nombre,
-        "descripcion2": bey.clear_wheel.descripcion,
+        "clear_id": bey.clear_wheel.id if bey.clear_wheel else None,
+        "descripcion2": bey.clear_wheel.descripcion if bey.clear_wheel else "",
         "track": bey.spin_track.nombre,
-        "descripcion3": bey.spin_track.descripcion,
+        "track_id": bey.spin_track.id if bey.spin_track else None,
+        "descripcion3": bey.spin_track.descripcion if bey.spin_track else "",
         "tip": bey.tip.nombre,
-        "descripcion4": bey.tip.descripcion,
+        "tip_id": bey.tip.id if bey.tip else None,
+        "descripcion4": bey.tip.descripcion if bey.tip else "",
         "tipe": bey.tipe.nombre,
-        "descripcion5": bey.tipe.descripcion,
-        "color": bey.color
+        "tipe_id": bey.tipe.id if bey.tipe else None,
+        "descripcion5": bey.tipe.descripcion if bey.tipe else "",
+        "color": bey.color,
+        "season": bey.season,
+        "sistem": bey.sistem
     }
 
     return Response(data, status = status.HTTP_200_OK)
 
+
+@api_view(["PUT", "POST"])
+def editar_beyblade(request, pk):
+    try:
+        try:
+            bey = Beyblade.objects.get(pk=pk)
+        except Beyblade.DoesNotExist:
+            return Response({"error": "El beyblade no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+            nombre = data.get("nombre", bey.nombre)
+            descripcion = data.get("descripcion", bey.descripcion)
+            fusion_id = data.get("fusion")
+            clear_id = data.get("clear")
+            track_id = data.get("track")
+            tip_id = data.get("tip")
+            tipe_id = data.get("tipe")
+            color = data.get("color", bey.color)
+            season = data.get("season", bey.season)
+            sistem = data.get("sistem", bey.sistem)
+        else:
+            nombre = request.POST.get("nombre", bey.nombre)
+            descripcion = request.POST.get("descripcion", bey.descripcion)
+            fusion_id = request.POST.get("fusion")
+            clear_id = request.POST.get("clear")
+            track_id = request.POST.get("track")
+            tip_id = request.POST.get("tip")
+            tipe_id = request.POST.get("tipe")
+            color = request.POST.get("color", bey.color)
+            season = request.POST.get("season", bey.season)
+            sistem = request.POST.get("sistem", bey.sistem)
+
+            if 'image' in request.FILES:
+                image_file = request.FILES.get("image")
+                if image_file:
+                    try:
+                        upload_result = cloudinary.uploader.upload(image_file, folder="beyblades")
+                        bey.photo = upload_result.get("secure_url") or upload_result.get("url")
+                    except Exception as cloud_err:
+                        print(f"Error subiendo beyblade a Cloudinary: {cloud_err}")
+                        bey.photo = image_file
+
+        bey.nombre = nombre
+        bey.descripcion = descripcion
+        if color:
+            bey.color = color
+        if season:
+            bey.season = season
+        if sistem:
+            bey.sistem = sistem
+
+        if fusion_id:
+            bey.fusion_wheel = FusionWheel.objects.get(id=fusion_id)
+        if clear_id:
+            bey.clear_wheel = ClearWheel.objects.get(id=clear_id)
+        if track_id:
+            bey.spin_track = SpinTrack.objects.get(id=track_id)
+        if tip_id:
+            bey.tip = Tip.objects.get(id=tip_id)
+        if tipe_id:
+            bey.tipe = Tipe.objects.get(id=tipe_id)
+
+        bey.save()
+        return Response({"success": "Beyblade actualizado con éxito"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": f"Error al editar beyblade: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @api_view(["DELETE"])
 def eliminar_bey(request, pk):
+
     try:
         bey = Beyblade.objects.get(pk=pk)
     except Beyblade.DoesNotExist:
@@ -348,7 +461,7 @@ def buscador(request):
             "id": r.id,
             "nombre": r.nombre,
             "descripcion": r.descripcion,
-            "photo": r.photo.url if r.photo else None,
+            "photo": _get_image_url(r.photo),
             "fusion": r.fusion_wheel.nombre,
             "descripcion1": r.fusion_wheel.descripcion,
             "clear": r.clear_wheel.nombre,
@@ -364,6 +477,7 @@ def buscador(request):
         data.append(list)
     
     return Response(data, status = status.HTTP_200_OK)
+
     
 
 

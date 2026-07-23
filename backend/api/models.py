@@ -96,4 +96,16 @@ class usuarioBeyblade(models.Model):
         return f"Usuario: {self.id_usuario.first_name}, Beyblade: {self.id_bb.nombre}, Precio: {self.precio}"
 
 
-# Create your models here.
+class Personaje(models.Model):
+    nombre = models.CharField(max_length=200, null=False)
+    altura = models.CharField(max_length=50, default="", blank=True)
+    peso = models.CharField(max_length=50, default="", blank=True)
+    personalidad = models.TextField(default="", blank=True)
+    historia = models.TextField(default="", blank=True)
+    foto = models.ImageField(upload_to="personajes/", blank=True, null=True)
+    beyblades = models.ManyToManyField(Beyblade, related_name="personajes", blank=True)
+
+    def __str__(self):
+        return f"{self.nombre}"
+
+
