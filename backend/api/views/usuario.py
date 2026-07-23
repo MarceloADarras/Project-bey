@@ -262,7 +262,7 @@ def dar_permisos_admin(request):
         except User.DoesNotExist:
             return Response({"error": "El usuario objetivo no fue encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
-        target_user.is_staffr = True
+        target_user.is_staff = True
         target_user.save()
 
         return Response({
