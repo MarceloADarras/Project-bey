@@ -245,7 +245,6 @@ def cargar_personajes(request, pk=None):
                 "historia": p.historia,
                 "foto": _get_image_url(p.foto),
                 "beyblades": beys_list,
-                "beyblade_nombre": names_str
             })
         return Response(data, status=status.HTTP_200_OK)
 

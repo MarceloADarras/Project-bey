@@ -131,7 +131,6 @@ onMounted(() => {
                 :personalidad="p.personalidad"
                 :historia="p.historia"
                 :foto="p.foto"
-                :beyblade-nombre="p.beyblade_nombre"
                 :beyblades="p.beyblades"
                 @editar="abrirEditar"
                 @eliminar="abrirEliminar"

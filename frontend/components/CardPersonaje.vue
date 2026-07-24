@@ -9,7 +9,6 @@ const props = defineProps({
     personalidad: String,
     historia: String,
     foto: String,
-    beybladeNombre: String,
     beyblades: Array
 });
 
@@ -18,13 +17,6 @@ const emit = defineEmits(['editar', 'eliminar']);
 const localUserRaw = localStorage.getItem('user');
 const localUser = localUserRaw ? JSON.parse(localUserRaw) : null;
 const esAdmin = computed(() => localUser?.is_staff || localUser?.is_superuser || false);
-
-const displayBeybladesText = computed(() => {
-    if (props.beyblades && props.beyblades.length > 0) {
-        return props.beyblades.map(b => b.nombre).join(', ');
-    }
-    return props.beybladeNombre || null;
-});
 </script>
 
 <template>
@@ -69,9 +61,9 @@ const displayBeybladesText = computed(() => {
                 </h3>
 
                 <!-- Associated Beyblade Badge -->
-                <div v-if="displayBeybladesText" class="inline-flex items-center gap-1 px-3 py-1 bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 rounded-full text-xs font-semibold max-w-full">
+                <div v-if="beyblades" v-for="b in beyblades" :key="b.id" class="inline-flex items-center gap-1 px-3 py-1 bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 rounded-full text-xs font-semibold max-w-full">
                     <span class="flex-shrink-0">⚡</span> 
-                    <span class="truncate">{{ displayBeybladesText }}</span>
+                    <span class="truncate">{{ b.nombre }}</span>
                 </div>
                 <div v-else class="inline-flex items-center gap-1 px-3 py-1 bg-slate-500/15 border border-slate-500/30 text-slate-500 dark:text-slate-400 rounded-full text-xs">
                     Sin Beyblade
